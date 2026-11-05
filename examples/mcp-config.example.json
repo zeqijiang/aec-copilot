@@ -1,0 +1,24 @@
+{
+  "engines": {
+    "revit": {
+      "command": ["python", "C:/path/to/your/revit_mcp_server.py"],
+      "cwd": "C:/path/to/your/server",
+      "tools": {
+        "revit_create_level": "your_existing_level_tool",
+        "revit_create_grid": "your_existing_grid_tool",
+        "revit_create_wall": "your_existing_wall_tool",
+        "revit_create_column": "your_existing_column_tool",
+        "revit_create_slab": "your_existing_slab_tool",
+        "revit_create_door": "your_existing_door_tool",
+        "revit_create_window": "your_existing_window_tool"
+      },
+      "transactions": {
+        "begin": "your_transaction_begin",
+        "commit": "your_transaction_commit",
+        "rollback": "your_transaction_rollback"
+      },
+      "manifest_tool": "your_read_only_common_manifest_tool",
+      "capture_tool": "your_native_png_capture_tool"
+    }
+  }
+}

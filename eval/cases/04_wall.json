@@ -1,0 +1,6 @@
+{
+  "id": "04_wall",
+  "category": "wall",
+  "instruction": "在1000,2000画一面5m长的墙，层高3.6m",
+  "engine": "revit"
+}

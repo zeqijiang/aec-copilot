@@ -1,0 +1,138 @@
+[
+  {
+    "id": "frame_grid_x0",
+    "type": "grid",
+    "start": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      0.0,
+      6000.0,
+      0.0
+    ],
+    "name": "1"
+  },
+  {
+    "id": "frame_grid_x1",
+    "type": "grid",
+    "start": [
+      9000.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      9000.0,
+      6000.0,
+      0.0
+    ],
+    "name": "2"
+  },
+  {
+    "id": "frame_grid_y0",
+    "type": "grid",
+    "start": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      9000.0,
+      0.0,
+      0.0
+    ],
+    "name": "A"
+  },
+  {
+    "id": "frame_grid_y1",
+    "type": "grid",
+    "start": [
+      0.0,
+      6000.0,
+      0.0
+    ],
+    "end": [
+      9000.0,
+      6000.0,
+      0.0
+    ],
+    "name": "B"
+  },
+  {
+    "id": "frame_column_0_0",
+    "type": "column",
+    "center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "width": 400.0,
+    "depth": 400.0,
+    "height": 4200.0
+  },
+  {
+    "id": "frame_column_0_1",
+    "type": "column",
+    "center": [
+      0.0,
+      6000.0,
+      0.0
+    ],
+    "width": 400.0,
+    "depth": 400.0,
+    "height": 4200.0
+  },
+  {
+    "id": "frame_column_1_0",
+    "type": "column",
+    "center": [
+      9000.0,
+      0.0,
+      0.0
+    ],
+    "width": 400.0,
+    "depth": 400.0,
+    "height": 4200.0
+  },
+  {
+    "id": "frame_column_1_1",
+    "type": "column",
+    "center": [
+      9000.0,
+      6000.0,
+      0.0
+    ],
+    "width": 400.0,
+    "depth": 400.0,
+    "height": 4200.0
+  },
+  {
+    "id": "frame_slab",
+    "type": "slab",
+    "boundary": [
+      [
+        0.0,
+        0.0,
+        0
+      ],
+      [
+        9000.0,
+        0.0,
+        0
+      ],
+      [
+        9000.0,
+        6000.0,
+        0
+      ],
+      [
+        0.0,
+        6000.0,
+        0
+      ]
+    ],
+    "thickness": 120.0,
+    "elevation": 0.0
+  }
+]

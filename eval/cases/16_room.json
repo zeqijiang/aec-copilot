@@ -1,0 +1,6 @@
+{
+  "id": "16_room",
+  "category": "room",
+  "instruction": "生成一个6.6m×4.2m的房间，层高3.15m，包含楼板",
+  "engine": "revit"
+}

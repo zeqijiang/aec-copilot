@@ -1,0 +1,6 @@
+{
+  "id": "31_building",
+  "category": "building",
+  "instruction": "创建一栋16m×12m的一层建筑，层高5m，四个角放柱子，柱宽500mm",
+  "engine": "revit"
+}

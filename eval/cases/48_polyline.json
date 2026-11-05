@@ -1,0 +1,6 @@
+{
+  "id": "48_polyline",
+  "category": "polyline",
+  "instruction": "在AutoCAD中绘制6000mm×4000mm的闭合矩形多段线",
+  "engine": "acad"
+}

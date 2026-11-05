@@ -1,0 +1,6 @@
+{
+  "id": "43_slab",
+  "category": "slab",
+  "instruction": "生成10m×8m的楼板，板厚200mm，标高-0.1m",
+  "engine": "revit"
+}

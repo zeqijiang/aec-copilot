@@ -1,0 +1,44 @@
+[
+  {
+    "id": "p1",
+    "type": "part",
+    "shape": "box",
+    "width": 100.0,
+    "depth": 60.0,
+    "height": 20.0,
+    "origin": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "size": [
+      100.0,
+      60.0,
+      20.0
+    ]
+  },
+  {
+    "id": "p2",
+    "type": "part",
+    "shape": "cylinder",
+    "diameter": 40.0,
+    "height": 80.0,
+    "origin": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "size": [
+      40.0,
+      80.0
+    ]
+  },
+  {
+    "id": "assembly_1",
+    "type": "assembly",
+    "parts": [
+      "p1",
+      "p2"
+    ]
+  }
+]

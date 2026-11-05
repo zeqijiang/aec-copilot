@@ -1,0 +1,33 @@
+{
+  "id": "06_narrow_door",
+  "elements": [
+    {
+      "id": "wall_s",
+      "type": "wall",
+      "start": [
+        0,
+        0,
+        0
+      ],
+      "end": [
+        6000,
+        0,
+        0
+      ],
+      "height": 3600,
+      "thickness": 200
+    },
+    {
+      "id": "door_1",
+      "type": "door",
+      "host_id": "wall_s",
+      "width": 600,
+      "height": 2100,
+      "bottom": 0,
+      "offset": 1000
+    }
+  ],
+  "seeded_rules": [
+    "AEC-DOOR-002"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "id": "46_opening",
+  "category": "opening",
+  "instruction": "创建一个10m×8m的房间，层高3.6m，北墙设置1500mm×1200mm的窗，窗台900mm",
+  "engine": "revit"
+}

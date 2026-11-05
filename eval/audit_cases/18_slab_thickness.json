@@ -1,0 +1,36 @@
+{
+  "id": "18_slab_thickness",
+  "elements": [
+    {
+      "id": "slab_1",
+      "type": "slab",
+      "boundary": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          6000,
+          0,
+          0
+        ],
+        [
+          6000,
+          4000,
+          0
+        ],
+        [
+          0,
+          4000,
+          0
+        ]
+      ],
+      "thickness": 0,
+      "elevation": 0
+    }
+  ],
+  "seeded_rules": [
+    "AEC-SLAB-001"
+  ]
+}

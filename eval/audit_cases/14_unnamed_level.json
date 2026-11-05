@@ -1,0 +1,14 @@
+{
+  "id": "14_unnamed_level",
+  "elements": [
+    {
+      "id": "level_1",
+      "type": "level",
+      "name": "",
+      "elevation": 0
+    }
+  ],
+  "seeded_rules": [
+    "AEC-LEVEL-002"
+  ]
+}

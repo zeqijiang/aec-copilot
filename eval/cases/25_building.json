@@ -1,0 +1,6 @@
+{
+  "id": "25_building",
+  "category": "building",
+  "instruction": "创建一栋15m×10m的三层小楼，层高3m，外墙240mm，四个角放柱子",
+  "engine": "revit"
+}

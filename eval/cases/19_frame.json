@@ -1,0 +1,6 @@
+{
+  "id": "19_frame",
+  "category": "frame",
+  "instruction": "创建15m×10m的带柱框架，层高4.5m，柱尺寸500mm",
+  "engine": "revit"
+}

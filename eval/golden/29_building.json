@@ -1,0 +1,312 @@
+[
+  {
+    "id": "building_level_0",
+    "type": "level",
+    "name": "F1",
+    "elevation": 0.0
+  },
+  {
+    "id": "building_level_1",
+    "type": "level",
+    "name": "F2",
+    "elevation": 3900.0
+  },
+  {
+    "id": "building_level_2",
+    "type": "level",
+    "name": "F3",
+    "elevation": 7800.0
+  },
+  {
+    "id": "building_grid_x0",
+    "type": "grid",
+    "start": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      0.0,
+      15000.0,
+      0.0
+    ],
+    "name": "1"
+  },
+  {
+    "id": "building_grid_x1",
+    "type": "grid",
+    "start": [
+      12500.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      12500.0,
+      15000.0,
+      0.0
+    ],
+    "name": "2"
+  },
+  {
+    "id": "building_grid_x2",
+    "type": "grid",
+    "start": [
+      25000.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      25000.0,
+      15000.0,
+      0.0
+    ],
+    "name": "3"
+  },
+  {
+    "id": "building_grid_y0",
+    "type": "grid",
+    "start": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      25000.0,
+      0.0,
+      0.0
+    ],
+    "name": "A"
+  },
+  {
+    "id": "building_grid_y1",
+    "type": "grid",
+    "start": [
+      0.0,
+      7500.0,
+      0.0
+    ],
+    "end": [
+      25000.0,
+      7500.0,
+      0.0
+    ],
+    "name": "B"
+  },
+  {
+    "id": "building_grid_y2",
+    "type": "grid",
+    "start": [
+      0.0,
+      15000.0,
+      0.0
+    ],
+    "end": [
+      25000.0,
+      15000.0,
+      0.0
+    ],
+    "name": "C"
+  },
+  {
+    "id": "building_f1_wall_s",
+    "type": "wall",
+    "start": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      25000.0,
+      0.0,
+      0.0
+    ],
+    "height": 3900.0,
+    "thickness": 200.0,
+    "level_id": "building_level_0"
+  },
+  {
+    "id": "building_f1_wall_e",
+    "type": "wall",
+    "start": [
+      25000.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      25000.0,
+      15000.0,
+      0.0
+    ],
+    "height": 3900.0,
+    "thickness": 200.0,
+    "level_id": "building_level_0"
+  },
+  {
+    "id": "building_f1_wall_n",
+    "type": "wall",
+    "start": [
+      25000.0,
+      15000.0,
+      0.0
+    ],
+    "end": [
+      0.0,
+      15000.0,
+      0.0
+    ],
+    "height": 3900.0,
+    "thickness": 200.0,
+    "level_id": "building_level_0"
+  },
+  {
+    "id": "building_f1_wall_w",
+    "type": "wall",
+    "start": [
+      0.0,
+      15000.0,
+      0.0
+    ],
+    "end": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "height": 3900.0,
+    "thickness": 200.0,
+    "level_id": "building_level_0"
+  },
+  {
+    "id": "building_f1_slab",
+    "type": "slab",
+    "boundary": [
+      [
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        25000.0,
+        0.0,
+        0.0
+      ],
+      [
+        25000.0,
+        15000.0,
+        0.0
+      ],
+      [
+        0.0,
+        15000.0,
+        0.0
+      ]
+    ],
+    "thickness": 120.0,
+    "elevation": 0.0,
+    "level_id": "building_level_0"
+  },
+  {
+    "id": "building_f2_wall_s",
+    "type": "wall",
+    "start": [
+      0.0,
+      0.0,
+      3900.0
+    ],
+    "end": [
+      25000.0,
+      0.0,
+      3900.0
+    ],
+    "height": 3900.0,
+    "thickness": 200.0,
+    "level_id": "building_level_1"
+  },
+  {
+    "id": "building_f2_wall_e",
+    "type": "wall",
+    "start": [
+      25000.0,
+      0.0,
+      3900.0
+    ],
+    "end": [
+      25000.0,
+      15000.0,
+      3900.0
+    ],
+    "height": 3900.0,
+    "thickness": 200.0,
+    "level_id": "building_level_1"
+  },
+  {
+    "id": "building_f2_wall_n",
+    "type": "wall",
+    "start": [
+      25000.0,
+      15000.0,
+      3900.0
+    ],
+    "end": [
+      0.0,
+      15000.0,
+      3900.0
+    ],
+    "height": 3900.0,
+    "thickness": 200.0,
+    "level_id": "building_level_1"
+  },
+  {
+    "id": "building_f2_wall_w",
+    "type": "wall",
+    "start": [
+      0.0,
+      15000.0,
+      3900.0
+    ],
+    "end": [
+      0.0,
+      0.0,
+      3900.0
+    ],
+    "height": 3900.0,
+    "thickness": 200.0,
+    "level_id": "building_level_1"
+  },
+  {
+    "id": "building_f2_slab",
+    "type": "slab",
+    "boundary": [
+      [
+        0.0,
+        0.0,
+        3900.0
+      ],
+      [
+        25000.0,
+        0.0,
+        3900.0
+      ],
+      [
+        25000.0,
+        15000.0,
+        3900.0
+      ],
+      [
+        0.0,
+        15000.0,
+        3900.0
+      ]
+    ],
+    "thickness": 120.0,
+    "elevation": 3900.0,
+    "level_id": "building_level_1"
+  },
+  {
+    "id": "door_s",
+    "type": "door",
+    "host_id": "building_f1_wall_s",
+    "width": 900.0,
+    "height": 2100.0,
+    "bottom": 0.0
+  }
+]

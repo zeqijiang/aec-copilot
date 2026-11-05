@@ -1,0 +1,24 @@
+{
+  "id": "12_bad_name",
+  "elements": [
+    {
+      "id": "wall south bad",
+      "type": "wall",
+      "start": [
+        0,
+        0,
+        0
+      ],
+      "end": [
+        6000,
+        0,
+        0
+      ],
+      "height": 3600,
+      "thickness": 200
+    }
+  ],
+  "seeded_rules": [
+    "AEC-NAME-001"
+  ]
+}

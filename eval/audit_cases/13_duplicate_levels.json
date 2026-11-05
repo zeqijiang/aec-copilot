@@ -1,0 +1,20 @@
+{
+  "id": "13_duplicate_levels",
+  "elements": [
+    {
+      "id": "level_1",
+      "type": "level",
+      "name": "F1",
+      "elevation": 0
+    },
+    {
+      "id": "level_2",
+      "type": "level",
+      "name": "F2",
+      "elevation": 0
+    }
+  ],
+  "seeded_rules": [
+    "AEC-LEVEL-001"
+  ]
+}

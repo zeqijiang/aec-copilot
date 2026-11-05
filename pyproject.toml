@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aec-copilot"
+version = "0.1.0"
+description = "Natural-language BIM/CAD/SolidWorks orchestration with a verifiable closed loop"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+authors = [{name = "AEC Copilot contributors"}]
+dependencies = [
+  "pydantic>=2.5,<3",
+  "Pillow>=10,<13",
+]
+
+[project.optional-dependencies]
+reports = ["openpyxl>=3.1,<4", "reportlab>=4,<6"]
+dev = ["pytest>=8,<9", "jsonschema>=4.20,<5"]
+all = ["openpyxl>=3.1,<4", "reportlab>=4,<6", "pytest>=8,<9", "jsonschema>=4.20,<5"]
+
+[project.scripts]
+aec = "aec_copilot.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

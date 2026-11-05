@@ -1,0 +1,6 @@
+{
+  "id": "01_wall",
+  "category": "wall",
+  "instruction": "在0,0画一面6m长的墙",
+  "engine": "revit"
+}

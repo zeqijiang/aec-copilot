@@ -1,0 +1,33 @@
+{
+  "id": "07_orphan_door",
+  "elements": [
+    {
+      "id": "wall_s",
+      "type": "wall",
+      "start": [
+        0,
+        0,
+        0
+      ],
+      "end": [
+        6000,
+        0,
+        0
+      ],
+      "height": 3600,
+      "thickness": 200
+    },
+    {
+      "id": "door_1",
+      "type": "door",
+      "host_id": "missing",
+      "width": 900,
+      "height": 2100,
+      "bottom": 0,
+      "offset": 1000
+    }
+  ],
+  "seeded_rules": [
+    "AEC-HOST-001"
+  ]
+}

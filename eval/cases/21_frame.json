@@ -1,0 +1,6 @@
+{
+  "id": "21_frame",
+  "category": "frame",
+  "instruction": "创建18m×12m的排柱框架，层高5m，柱宽450mm",
+  "engine": "revit"
+}

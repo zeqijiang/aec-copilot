@@ -1,0 +1,38 @@
+{
+  "id": "15_duplicate_grids",
+  "elements": [
+    {
+      "id": "grid_1",
+      "type": "grid",
+      "name": "1",
+      "start": [
+        0,
+        0,
+        0
+      ],
+      "end": [
+        0,
+        6000,
+        0
+      ]
+    },
+    {
+      "id": "grid_2",
+      "type": "grid",
+      "name": "1",
+      "start": [
+        0,
+        0,
+        0
+      ],
+      "end": [
+        0,
+        6000,
+        0
+      ]
+    }
+  ],
+  "seeded_rules": [
+    "AEC-GRID-002"
+  ]
+}

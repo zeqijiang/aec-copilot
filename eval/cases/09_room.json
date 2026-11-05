@@ -1,0 +1,6 @@
+{
+  "id": "09_room",
+  "category": "room",
+  "instruction": "生成一个6m×4m的房间",
+  "engine": "revit"
+}

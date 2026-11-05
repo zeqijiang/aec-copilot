@@ -1,0 +1,33 @@
+{
+  "id": "20_window_outside",
+  "elements": [
+    {
+      "id": "wall_s",
+      "type": "wall",
+      "start": [
+        0,
+        0,
+        0
+      ],
+      "end": [
+        6000,
+        0,
+        0
+      ],
+      "height": 3600,
+      "thickness": 200
+    },
+    {
+      "id": "window_1",
+      "type": "window",
+      "host_id": "wall_s",
+      "width": 1500,
+      "height": 1500,
+      "bottom": 900,
+      "offset": 5500
+    }
+  ],
+  "seeded_rules": [
+    "AEC-HOST-002"
+  ]
+}

@@ -1,0 +1,253 @@
+[
+  {
+    "id": "building_level_0",
+    "type": "level",
+    "name": "F1",
+    "elevation": 0.0
+  },
+  {
+    "id": "building_level_1",
+    "type": "level",
+    "name": "F2",
+    "elevation": 5000.0
+  },
+  {
+    "id": "building_grid_x0",
+    "type": "grid",
+    "start": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      0.0,
+      12000.0,
+      0.0
+    ],
+    "name": "1"
+  },
+  {
+    "id": "building_grid_x1",
+    "type": "grid",
+    "start": [
+      8000.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      8000.0,
+      12000.0,
+      0.0
+    ],
+    "name": "2"
+  },
+  {
+    "id": "building_grid_x2",
+    "type": "grid",
+    "start": [
+      16000.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      16000.0,
+      12000.0,
+      0.0
+    ],
+    "name": "3"
+  },
+  {
+    "id": "building_grid_y0",
+    "type": "grid",
+    "start": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      16000.0,
+      0.0,
+      0.0
+    ],
+    "name": "A"
+  },
+  {
+    "id": "building_grid_y1",
+    "type": "grid",
+    "start": [
+      0.0,
+      6000.0,
+      0.0
+    ],
+    "end": [
+      16000.0,
+      6000.0,
+      0.0
+    ],
+    "name": "B"
+  },
+  {
+    "id": "building_grid_y2",
+    "type": "grid",
+    "start": [
+      0.0,
+      12000.0,
+      0.0
+    ],
+    "end": [
+      16000.0,
+      12000.0,
+      0.0
+    ],
+    "name": "C"
+  },
+  {
+    "id": "building_f1_wall_s",
+    "type": "wall",
+    "start": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      16000.0,
+      0.0,
+      0.0
+    ],
+    "height": 5000.0,
+    "thickness": 200.0,
+    "level_id": "building_level_0"
+  },
+  {
+    "id": "building_f1_wall_e",
+    "type": "wall",
+    "start": [
+      16000.0,
+      0.0,
+      0.0
+    ],
+    "end": [
+      16000.0,
+      12000.0,
+      0.0
+    ],
+    "height": 5000.0,
+    "thickness": 200.0,
+    "level_id": "building_level_0"
+  },
+  {
+    "id": "building_f1_wall_n",
+    "type": "wall",
+    "start": [
+      16000.0,
+      12000.0,
+      0.0
+    ],
+    "end": [
+      0.0,
+      12000.0,
+      0.0
+    ],
+    "height": 5000.0,
+    "thickness": 200.0,
+    "level_id": "building_level_0"
+  },
+  {
+    "id": "building_f1_wall_w",
+    "type": "wall",
+    "start": [
+      0.0,
+      12000.0,
+      0.0
+    ],
+    "end": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "height": 5000.0,
+    "thickness": 200.0,
+    "level_id": "building_level_0"
+  },
+  {
+    "id": "building_f1_column_0",
+    "type": "column",
+    "center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "width": 500.0,
+    "depth": 500.0,
+    "height": 5000.0,
+    "level_id": "building_level_0"
+  },
+  {
+    "id": "building_f1_column_1",
+    "type": "column",
+    "center": [
+      16000.0,
+      0.0,
+      0.0
+    ],
+    "width": 500.0,
+    "depth": 500.0,
+    "height": 5000.0,
+    "level_id": "building_level_0"
+  },
+  {
+    "id": "building_f1_column_2",
+    "type": "column",
+    "center": [
+      16000.0,
+      12000.0,
+      0.0
+    ],
+    "width": 500.0,
+    "depth": 500.0,
+    "height": 5000.0,
+    "level_id": "building_level_0"
+  },
+  {
+    "id": "building_f1_column_3",
+    "type": "column",
+    "center": [
+      0.0,
+      12000.0,
+      0.0
+    ],
+    "width": 500.0,
+    "depth": 500.0,
+    "height": 5000.0,
+    "level_id": "building_level_0"
+  },
+  {
+    "id": "building_f1_slab",
+    "type": "slab",
+    "boundary": [
+      [
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        16000.0,
+        0.0,
+        0.0
+      ],
+      [
+        16000.0,
+        12000.0,
+        0.0
+      ],
+      [
+        0.0,
+        12000.0,
+        0.0
+      ]
+    ],
+    "thickness": 120.0,
+    "elevation": 0.0,
+    "level_id": "building_level_0"
+  }
+]

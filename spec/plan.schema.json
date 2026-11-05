@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aec-copilot.local/spec/plan.schema.json",
+  "title": "AEC Copilot modeling plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "instruction", "engine", "units", "operations"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "instruction": {"type": "string", "minLength": 1, "maxLength": 4000},
+    "engine": {"enum": ["revit", "acad", "sw"]},
+    "units": {"const": "mm"},
+    "operations": {
+      "type": "array", "minItems": 1, "maxItems": 2000,
+      "items": {
+        "type": "object",
+        "required": ["op", "id"],
+        "properties": {
+          "op": {"enum": ["create_level", "create_grid", "create_wall", "create_column", "create_slab", "create_door", "create_window", "draw_polyline", "create_part", "create_assembly", "create_room", "create_frame", "create_building"]},
+          "id": {"type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[A-Za-z0-9_\\-\\u4e00-\\u9fff]+$"}
+        }
+      }
+    },
+    "metadata": {"type": "object"}
+  }
+}

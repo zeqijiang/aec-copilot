@@ -1,0 +1,20 @@
+{
+  "id": "19_malformed_wall",
+  "elements": [
+    {
+      "id": "wall_s",
+      "type": "wall",
+      "start": null,
+      "end": [
+        6000,
+        0,
+        0
+      ],
+      "height": 3600,
+      "thickness": 200
+    }
+  ],
+  "seeded_rules": [
+    "AEC-GEOM-002"
+  ]
+}

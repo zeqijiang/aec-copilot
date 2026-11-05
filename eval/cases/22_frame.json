@@ -1,0 +1,6 @@
+{
+  "id": "22_frame",
+  "category": "frame",
+  "instruction": "生成10m×8m的带柱框架，高度3.9m",
+  "engine": "revit"
+}

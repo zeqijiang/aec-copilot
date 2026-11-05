@@ -1,0 +1,6 @@
+{
+  "id": "42_slab",
+  "category": "slab",
+  "instruction": "创建6m×4m的楼板，厚度120mm，标高3.6m",
+  "engine": "revit"
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "column_1",
+    "type": "column",
+    "center": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "width": 450.0,
+    "depth": 450.0,
+    "height": 5000.0
+  }
+]

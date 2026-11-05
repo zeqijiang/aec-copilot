@@ -1,0 +1,6 @@
+{
+  "id": "45_opening",
+  "category": "opening",
+  "instruction": "生成一个8m×6m的房间，层高3.3m，南墙设置900mm宽、高度2100mm的门",
+  "engine": "revit"
+}

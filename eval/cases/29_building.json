@@ -1,0 +1,6 @@
+{
+  "id": "29_building",
+  "category": "building",
+  "instruction": "创建一栋25m×15m的两层建筑，层高3.9m，南墙加一扇900mm宽的门",
+  "engine": "revit"
+}

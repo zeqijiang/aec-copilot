@@ -1,0 +1,6 @@
+{
+  "id": "15_room",
+  "category": "room",
+  "instruction": "创建6000mm×4000mm的房间，层高3m，墙厚200mm",
+  "engine": "revit"
+}

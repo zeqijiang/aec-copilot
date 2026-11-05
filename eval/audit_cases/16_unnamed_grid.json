@@ -1,0 +1,23 @@
+{
+  "id": "16_unnamed_grid",
+  "elements": [
+    {
+      "id": "grid_1",
+      "type": "grid",
+      "name": "",
+      "start": [
+        0,
+        0,
+        0
+      ],
+      "end": [
+        0,
+        6000,
+        0
+      ]
+    }
+  ],
+  "seeded_rules": [
+    "AEC-GRID-001"
+  ]
+}

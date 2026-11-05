@@ -1,0 +1,6 @@
+{
+  "id": "05_wall",
+  "category": "wall",
+  "instruction": "创建一面长度7200mm的墙，高度3600mm，墙厚240mm",
+  "engine": "revit"
+}

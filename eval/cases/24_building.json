@@ -1,0 +1,6 @@
+{
+  "id": "24_building",
+  "category": "building",
+  "instruction": "生成一栋12m×8m的两层建筑，层高3.3m，墙厚200mm",
+  "engine": "revit"
+}

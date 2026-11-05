@@ -1,0 +1,6 @@
+{
+  "id": "49_part",
+  "category": "part",
+  "instruction": "在SolidWorks中生成100mm×50mm×20mm的零件",
+  "engine": "sw"
+}

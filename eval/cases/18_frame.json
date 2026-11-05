@@ -1,0 +1,6 @@
+{
+  "id": "18_frame",
+  "category": "frame",
+  "instruction": "生成9m×6m的柱网框架，高度4.2m，柱宽400mm",
+  "engine": "revit"
+}

@@ -1,0 +1,6 @@
+{
+  "id": "02_wall",
+  "category": "wall",
+  "instruction": "画一面8000mm长、层高3m、墙厚200mm的墙",
+  "engine": "revit"
+}

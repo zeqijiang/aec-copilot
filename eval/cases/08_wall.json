@@ -1,0 +1,6 @@
+{
+  "id": "08_wall",
+  "category": "wall",
+  "instruction": "创建一面650cm长的墙，层高3.6m，墙厚200mm",
+  "engine": "revit"
+}

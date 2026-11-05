@@ -1,0 +1,98 @@
+[
+  {
+    "id": "room_wall_s",
+    "type": "wall",
+    "start": [
+      0.0,
+      0.0,
+      0
+    ],
+    "end": [
+      7500.0,
+      0.0,
+      0
+    ],
+    "height": 3600.0,
+    "thickness": 200.0,
+    "level_id": null
+  },
+  {
+    "id": "room_wall_e",
+    "type": "wall",
+    "start": [
+      7500.0,
+      0.0,
+      0
+    ],
+    "end": [
+      7500.0,
+      6000.0,
+      0
+    ],
+    "height": 3600.0,
+    "thickness": 200.0,
+    "level_id": null
+  },
+  {
+    "id": "room_wall_n",
+    "type": "wall",
+    "start": [
+      7500.0,
+      6000.0,
+      0
+    ],
+    "end": [
+      0.0,
+      6000.0,
+      0
+    ],
+    "height": 3600.0,
+    "thickness": 200.0,
+    "level_id": null
+  },
+  {
+    "id": "room_wall_w",
+    "type": "wall",
+    "start": [
+      0.0,
+      6000.0,
+      0
+    ],
+    "end": [
+      0.0,
+      0.0,
+      0
+    ],
+    "height": 3600.0,
+    "thickness": 200.0,
+    "level_id": null
+  },
+  {
+    "id": "room_slab",
+    "type": "slab",
+    "boundary": [
+      [
+        0.0,
+        0.0,
+        0
+      ],
+      [
+        7500.0,
+        0.0,
+        0
+      ],
+      [
+        7500.0,
+        6000.0,
+        0
+      ],
+      [
+        0.0,
+        6000.0,
+        0
+      ]
+    ],
+    "thickness": 120.0,
+    "elevation": 0.0
+  }
+]

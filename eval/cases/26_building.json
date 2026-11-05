@@ -1,0 +1,6 @@
+{
+  "id": "26_building",
+  "category": "building",
+  "instruction": "生成一栋20m×12m的一层建筑，层高4.2m，中间加一道隔墙",
+  "engine": "revit"
+}

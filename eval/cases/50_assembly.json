@@ -1,0 +1,37 @@
+{
+  "id": "50_assembly",
+  "category": "assembly",
+  "instruction": "在SolidWorks中创建两个零件并组成装配体",
+  "engine": "sw",
+  "plan": {
+    "schema_version": "1.0",
+    "instruction": "在SolidWorks中创建两个零件并组成装配体",
+    "engine": "sw",
+    "units": "mm",
+    "operations": [
+      {
+        "op": "create_part",
+        "id": "p1",
+        "shape": "box",
+        "width": 100,
+        "depth": 60,
+        "height": 20
+      },
+      {
+        "op": "create_part",
+        "id": "p2",
+        "shape": "cylinder",
+        "diameter": 40,
+        "height": 80
+      },
+      {
+        "op": "create_assembly",
+        "id": "assembly_1",
+        "parts": [
+          "p1",
+          "p2"
+        ]
+      }
+    ]
+  }
+}

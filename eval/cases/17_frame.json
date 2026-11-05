@@ -1,0 +1,6 @@
+{
+  "id": "17_frame",
+  "category": "frame",
+  "instruction": "创建一个12m×8m的带柱框架，层高3.6m",
+  "engine": "revit"
+}

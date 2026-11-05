@@ -1,0 +1,6 @@
+{
+  "id": "30_building",
+  "category": "building",
+  "instruction": "生成一栋10m×10m的三层小楼，层高3.2m，外墙180mm，中间加隔墙",
+  "engine": "revit"
+}

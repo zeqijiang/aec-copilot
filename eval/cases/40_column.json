@@ -1,0 +1,6 @@
+{
+  "id": "40_column",
+  "category": "column",
+  "instruction": "创建一根450mm×450mm、高5m的柱",
+  "engine": "revit"
+}

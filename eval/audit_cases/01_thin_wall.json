@@ -1,0 +1,24 @@
+{
+  "id": "01_thin_wall",
+  "elements": [
+    {
+      "id": "wall_s",
+      "type": "wall",
+      "start": [
+        0,
+        0,
+        0
+      ],
+      "end": [
+        6000,
+        0,
+        0
+      ],
+      "height": 3600,
+      "thickness": 80
+    }
+  ],
+  "seeded_rules": [
+    "AEC-WALL-002"
+  ]
+}

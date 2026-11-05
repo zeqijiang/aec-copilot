@@ -1,0 +1,6 @@
+{
+  "id": "28_building",
+  "category": "building",
+  "instruction": "生成一栋18m×9m的四层建筑，层高3.6m，四角放柱",
+  "engine": "revit"
+}

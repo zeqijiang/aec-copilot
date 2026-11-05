@@ -1,0 +1,6 @@
+{
+  "id": "37_column",
+  "category": "column",
+  "instruction": "生成一根400mm×400mm、高度3.6m的柱",
+  "engine": "revit"
+}

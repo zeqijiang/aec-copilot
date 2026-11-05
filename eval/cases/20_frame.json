@@ -1,0 +1,6 @@
+{
+  "id": "20_frame",
+  "category": "frame",
+  "instruction": "生成6m×6m的框架，高度3m，无楼板",
+  "engine": "revit"
+}

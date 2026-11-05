@@ -1,0 +1,6 @@
+{
+  "id": "47_polyline",
+  "category": "polyline",
+  "instruction": "在AutoCAD中绘制(0,0),(6000,0),(6000,4000)的闭合多段线",
+  "engine": "acad"
+}

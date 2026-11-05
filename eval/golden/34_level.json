@@ -1,0 +1,14 @@
+[
+  {
+    "id": "level_1",
+    "type": "level",
+    "name": "L1",
+    "elevation": 0.0
+  },
+  {
+    "id": "level_2",
+    "type": "level",
+    "name": "L2",
+    "elevation": 3600.0
+  }
+]
