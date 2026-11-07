@@ -1,0 +1,543 @@
+{
+  "results": [
+    {
+      "id": "47_polyline",
+      "category": "polyline",
+      "engine": "acad",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 3794,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "48_polyline",
+      "category": "polyline",
+      "engine": "acad",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 1840,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "49_part",
+      "category": "part",
+      "engine": "sw",
+      "status": "failed",
+      "attempts": 2,
+      "ms": 1553,
+      "error": null,
+      "elements": 0
+    },
+    {
+      "id": "50_assembly",
+      "category": "assembly",
+      "engine": "sw",
+      "status": "error",
+      "attempts": 0,
+      "ms": 0,
+      "error": "AECError: Assembly instruction needs part IDs, e.g. 将p1和p2创建装配体"
+    },
+    {
+      "id": "01_wall",
+      "category": "wall",
+      "engine": "revit",
+      "status": "failed",
+      "attempts": 2,
+      "ms": 1895,
+      "error": null,
+      "elements": 0
+    },
+    {
+      "id": "01_wall",
+      "category": "wall",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 7199,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "02_wall",
+      "category": "wall",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 6527,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "03_wall",
+      "category": "wall",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4628,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "04_wall",
+      "category": "wall",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 5118,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "05_wall",
+      "category": "wall",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4623,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "06_wall",
+      "category": "wall",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4612,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "07_wall",
+      "category": "wall",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4618,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "08_wall",
+      "category": "wall",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4666,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "09_room",
+      "category": "room",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4665,
+      "error": null,
+      "elements": 4
+    },
+    {
+      "id": "10_room",
+      "category": "room",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4627,
+      "error": null,
+      "elements": 4
+    },
+    {
+      "id": "11_room",
+      "category": "room",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4638,
+      "error": null,
+      "elements": 4
+    },
+    {
+      "id": "12_room",
+      "category": "room",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 5141,
+      "error": null,
+      "elements": 5
+    },
+    {
+      "id": "13_room",
+      "category": "room",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4636,
+      "error": null,
+      "elements": 5
+    },
+    {
+      "id": "14_room",
+      "category": "room",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4638,
+      "error": null,
+      "elements": 4
+    },
+    {
+      "id": "15_room",
+      "category": "room",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4641,
+      "error": null,
+      "elements": 4
+    },
+    {
+      "id": "16_room",
+      "category": "room",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 5141,
+      "error": null,
+      "elements": 5
+    },
+    {
+      "id": "17_frame",
+      "category": "frame",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4140,
+      "error": null,
+      "elements": 9
+    },
+    {
+      "id": "18_frame",
+      "category": "frame",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4136,
+      "error": null,
+      "elements": 9
+    },
+    {
+      "id": "19_frame",
+      "category": "frame",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 3659,
+      "error": null,
+      "elements": 9
+    },
+    {
+      "id": "20_frame",
+      "category": "frame",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4121,
+      "error": null,
+      "elements": 8
+    },
+    {
+      "id": "21_frame",
+      "category": "frame",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 3624,
+      "error": null,
+      "elements": 9
+    },
+    {
+      "id": "22_frame",
+      "category": "frame",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 3627,
+      "error": null,
+      "elements": 9
+    },
+    {
+      "id": "23_building",
+      "category": "building",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 11203,
+      "error": null,
+      "elements": 29
+    },
+    {
+      "id": "24_building",
+      "category": "building",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 9713,
+      "error": null,
+      "elements": 19
+    },
+    {
+      "id": "25_building",
+      "category": "building",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 8305,
+      "error": null,
+      "elements": 37
+    },
+    {
+      "id": "26_building",
+      "category": "building",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4673,
+      "error": null,
+      "elements": 14
+    },
+    {
+      "id": "27_building",
+      "category": "building",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 8168,
+      "error": null,
+      "elements": 13
+    },
+    {
+      "id": "28_building",
+      "category": "building",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 8274,
+      "error": null,
+      "elements": 47
+    },
+    {
+      "id": "29_building",
+      "category": "building",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 144850,
+      "error": null,
+      "elements": 20
+    },
+    {
+      "id": "30_building",
+      "category": "building",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 16721,
+      "error": null,
+      "elements": 28
+    },
+    {
+      "id": "31_building",
+      "category": "building",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4683,
+      "error": null,
+      "elements": 17
+    },
+    {
+      "id": "32_building",
+      "category": "building",
+      "engine": "revit",
+      "status": "failed",
+      "attempts": 2,
+      "ms": 484204,
+      "error": null,
+      "elements": 0
+    },
+    {
+      "id": "33_level",
+      "category": "level",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 117734,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "34_level",
+      "category": "level",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 3613,
+      "error": null,
+      "elements": 2
+    },
+    {
+      "id": "35_level",
+      "category": "level",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 3614,
+      "error": null,
+      "elements": 2
+    },
+    {
+      "id": "36_level",
+      "category": "level",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 3606,
+      "error": null,
+      "elements": 3
+    },
+    {
+      "id": "37_column",
+      "category": "column",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 3606,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "38_column",
+      "category": "column",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 3610,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "39_column",
+      "category": "column",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 3598,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "40_column",
+      "category": "column",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 3610,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "41_slab",
+      "category": "slab",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 3618,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "42_slab",
+      "category": "slab",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 3626,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "43_slab",
+      "category": "slab",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4115,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "44_slab",
+      "category": "slab",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4126,
+      "error": null,
+      "elements": 1
+    },
+    {
+      "id": "45_opening",
+      "category": "opening",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 5647,
+      "error": null,
+      "elements": 5
+    },
+    {
+      "id": "46_opening",
+      "category": "opening",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 4641,
+      "error": null,
+      "elements": 5
+    },
+    {
+      "id": "49_part",
+      "category": "part",
+      "engine": "sw",
+      "status": "failed",
+      "attempts": 2,
+      "ms": 1552,
+      "error": null,
+      "elements": 0
+    },
+    {
+      "id": "50_assembly",
+      "category": "assembly",
+      "engine": "sw",
+      "status": "error",
+      "attempts": 0,
+      "ms": 0,
+      "error": "AECError: Assembly instruction needs part IDs, e.g. 将p1和p2创建装配体"
+    },
+    {
+      "id": "32_building",
+      "category": "building",
+      "engine": "revit",
+      "status": "passed",
+      "attempts": 1,
+      "ms": 27159,
+      "error": null,
+      "elements": 30
+    }
+  ],
+  "total_ms": 27162
+}

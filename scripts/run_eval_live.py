@@ -34,6 +34,7 @@ def main() -> int:
     ap.add_argument("--only", default=None, help="只跑指定 category")
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--attempts", type=int, default=2)
+    ap.add_argument("--ids", default=None, help="逗号分隔的用例 id，如 47_polyline,49_part")
     args = ap.parse_args()
 
     cases_dir = REPO / "eval" / "cases"
@@ -42,6 +43,9 @@ def main() -> int:
         cases = [c for c in cases if json.loads(c.read_text(encoding="utf-8")).get("engine") == args.engine]
     if args.only:
         cases = [c for c in cases if json.loads(c.read_text(encoding="utf-8")).get("category") == args.only]
+    if args.ids:
+        wanted = {s.strip() for s in args.ids.split(",")}
+        cases = [c for c in cases if c.stem in wanted]
     if args.limit:
         cases = cases[: args.limit]
 
@@ -50,11 +54,21 @@ def main() -> int:
     engines: dict[str, MCPEngine] = {}
 
     def get_engine(name: str) -> MCPEngine:
+        # 每引擎一个 server 进程，全部用例复用（每例新建会在 stdio 握手处偶发死锁且泄漏进程）
         if name not in engines:
             engines[name] = MCPEngine.from_config(name, args.config)
         return engines[name]
 
+    results_path = out_dir / "results.json"
     results: list[dict] = []
+    if results_path.exists():  # 断点续跑：只跳过已通过的用例（失败的重跑）
+        results = json.loads(results_path.read_text(encoding="utf-8"))["results"]
+        done_ids = {r["id"] for r in results if r["status"] == "passed"}
+        cases = [c for c in cases if json.loads(c.read_text(encoding="utf-8"))["id"] not in done_ids]
+
+    def flush():
+        results_path.write_text(json.dumps({"results": results}, ensure_ascii=False, indent=2), encoding="utf-8")
+
     t_all = time.perf_counter()
     for i, case_path in enumerate(cases, 1):
         case = json.loads(case_path.read_text(encoding="utf-8"))
@@ -62,8 +76,8 @@ def main() -> int:
         t0 = time.perf_counter()
         row = {"id": cid, "category": category, "engine": engine, "status": "error", "attempts": 0, "ms": 0, "error": None}
         try:
-            runner = Runner(output_root=str(out_dir / "runs"), max_attempts=args.attempts)
-            result = runner.run(case["instruction"], engine=engine, backend="mcp", mcp_config=args.config)
+            runner = Runner(engine=get_engine(engine), output_root=str(out_dir / "runs"), max_attempts=args.attempts)
+            result = runner.run(case["instruction"], engine=engine)
             row["status"] = result.status
             row["attempts"] = len(result.attempts)
             row["elements"] = len(result.elements)
@@ -73,8 +87,15 @@ def main() -> int:
                 traceback.print_exc()
         row["ms"] = int((time.perf_counter() - t0) * 1000)
         results.append(row)
+        flush()
         mark = {"passed": "✅", "failed": "❌", "error": "💥"}.get(row["status"], "·")
-        print(f"[{i}/{len(cases)}] {mark} {cid} ({category}/{engine}) {row['status']} {row['ms']}ms {row['error'] or ''}")
+        print(f"[{i}/{len(cases)}] {mark} {cid} ({category}/{engine}) {row['status']} {row['ms']}ms {row['error'] or ''}", flush=True)
+
+    for eng in engines.values():
+        try:
+            eng.client.close()
+        except Exception:  # noqa: BLE001
+            pass
 
     n_pass = sum(1 for r in results if r["status"] == "passed")
     n_unsupported = sum(1 for r in results if r["status"] != "passed" and r["error"] and "M2" in str(r["error"]))
