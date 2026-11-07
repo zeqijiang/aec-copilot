@@ -60,10 +60,10 @@ def tool_defs() -> list[dict[str, Any]]:
         {"name": "aec_preview", "description": "中文指令 → 建模计划与原子调用清单（零副作用，先看后干）", "inputSchema": _obj(
             {"instruction": {"type": "string"}, "engine": {"enum": ["revit", "acad", "sw"]}}, ["instruction"])},
         {"name": "aec_run", "description": "全闭环：中文 → 计划 → 事务执行 → 截图 → 校验 → 最多3轮重试 → Excel/PDF 报告。"
-            "backend=simulation 无需工业软件；direct 为真机（Revit 需桥在线）", "inputSchema": _obj(
+            "backend=simulation 无需工业软件；direct 为真机（Revit 需桥在线）；use_vlm=true 时启用视觉复核（需 AEC_VLM_* 凭证）", "inputSchema": _obj(
             {"instruction": {"type": "string"}, "engine": {"enum": ["revit", "acad", "sw"]},
              "backend": {"enum": ["simulation", "direct"]}, "max_attempts": {"type": "integer", "minimum": 1, "maximum": 3},
-             "output_root": {"type": "string"}}, ["instruction"])},
+             "output_root": {"type": "string"}, "use_vlm": {"type": "boolean"}}, ["instruction"])},
         {"name": "aec_audit", "description": "构件清单 JSON 路径（通常取某次 run 的 elements.json）→ 规则审图 → 问题清单 + 报告", "inputSchema": _obj(
             {"path": {"type": "string"}, "output": {"type": "string"}}, ["path"])},
         {"name": "aec_recent_runs", "description": "最近运行一览（run_id/状态/构件数/产物目录）", "inputSchema": _obj(
@@ -82,6 +82,9 @@ def tool_defs() -> list[dict[str, Any]]:
              "active_view": {"type": "boolean"}, "output_dir": {"type": "string"}}, ["format"])},
         {"name": "aec_import_drawing", "description": "图纸识别：DWG/DXF → 图层/实体统计/文字/标注/边界 的结构化报告（Agent 由此『看懂』一张图）。DWG 需本机 AutoCAD 运行", "inputSchema": _obj(
             {"path": {"type": "string"}}, ["path"])},
+        {"name": "aec_review_image", "description": "VLM 看图：效果图(PNG) + 原始需求 → 视觉模型比对，返回结构化差异（passed/differences）。"
+            "需环境变量 AEC_VLM_API_KEY + AEC_VLM_MODEL（OpenAI 兼容端点）；advisory 模式——几何复核仍是权威", "inputSchema": _obj(
+            {"image_path": {"type": "string"}, "instruction": {"type": "string"}}, ["image_path"])},
     ]
 
 
@@ -115,8 +118,15 @@ def call_tool(name: str, args: dict[str, Any]) -> str:
             return json.dumps({"plan": plan.model_dump(), "calls": calls, "n_calls": len(calls)}, ensure_ascii=False)
         if name == "aec_run":
             engine = create_engine(args.get("engine", "revit"), args.get("backend", "simulation"))
+            vlm = None
+            if args.get("use_vlm"):
+                from .verifier import VLMReviewer
+
+                candidate = VLMReviewer()
+                if candidate.configured:
+                    vlm = candidate
             runner = Runner(engine=engine, output_root=args.get("output_root") or str(REPO_ROOT / "runs"),
-                            max_attempts=args.get("max_attempts", 3))
+                            max_attempts=args.get("max_attempts", 3), vlm=vlm)
             result = runner.run(args["instruction"], engine=engine.name)
             return json.dumps(_summary(result), ensure_ascii=False)
         if name == "aec_audit":
@@ -171,6 +181,17 @@ def call_tool(name: str, args: dict[str, Any]) -> str:
                                             "args": {"steps": [{"id": "aec_export", "operation": "export", "args": step_args}]},
                                             "preview": False})
             return json.dumps(res, ensure_ascii=False, default=str)
+        if name == "aec_review_image":
+            from .verifier import VLMReviewer
+
+            vlm = VLMReviewer()
+            if not vlm.configured:
+                return json.dumps({"ok": False, "code": "E_ENGINE_DOWN",
+                                   "message": "VLM 未配置：设置 AEC_VLM_API_KEY + AEC_VLM_MODEL（OpenAI 兼容端点）"}, ensure_ascii=False)
+            diffs, advisory, usage = vlm.review(args.get("instruction", ""), args["image_path"])
+            return json.dumps({"passed": advisory.get("passed", not diffs), "differences": [d.message for d in diffs],
+                               "advisory": advisory, "token_usage": usage,
+                               "note": "advisory 模式：视觉观察仅供参考，确定性几何复核仍是权威"}, ensure_ascii=False)
         if name == "aec_import_drawing":
             report = read_drawing(args["path"])
             return json.dumps(report, ensure_ascii=False)
