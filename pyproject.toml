@@ -17,8 +17,13 @@ dependencies = [
 
 [project.optional-dependencies]
 reports = ["openpyxl>=3.1,<4", "reportlab>=4,<6"]
-dev = ["pytest>=8,<9", "jsonschema>=4.20,<5"]
-all = ["openpyxl>=3.1,<4", "reportlab>=4,<6", "pytest>=8,<9", "jsonschema>=4.20,<5"]
+live = [
+  "mcp>=1.0,<2",
+  "ezdxf>=1.3",
+  "pywin32>=306; sys_platform == 'win32'",
+]
+dev = ["pytest>=8,<9", "jsonschema>=4.20,<5", "pytest-asyncio>=0.24"]
+all = ["openpyxl>=3.1,<4", "reportlab>=4,<6", "pytest>=8,<9", "jsonschema>=4.20,<5", "pytest-asyncio>=0.24", "mcp>=1.0,<2", "ezdxf>=1.3", "pywin32>=306; sys_platform == 'win32'"]
 
 [project.scripts]
 aec = "aec_copilot.cli:main"
@@ -32,6 +37,7 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+asyncio_mode = "auto"
 
 [tool.ruff]
 line-length = 100

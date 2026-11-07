@@ -86,7 +86,7 @@ class AttemptRecord(BaseModel):
 class RunResult(BaseModel):
     run_id: str
     status: Literal["passed", "failed", "preview"]
-    backend: Literal["simulation", "mcp"]
+    backend: Literal["simulation", "direct", "mcp"]
     engine: str
     instruction: str
     plan: Plan

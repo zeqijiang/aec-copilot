@@ -30,3 +30,7 @@ Thumbs.db
 *mcp-config.json
 !mcp-config.example.json
 pytest-of-admin/
+server_fault.log
+runs-probe/
+runs-mcp-test/
+runs-direct-test/
