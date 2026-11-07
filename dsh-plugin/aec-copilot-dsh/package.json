@@ -1,0 +1,25 @@
+{
+  "name": "aec-copilot-dsh",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AEC Copilot（蓝图智匠）面板：三引擎健康、真机评测报告（Revit 46/46）、运行历史、IFC/审图产物入口。配套 MCP 连接器 aec 提供建模/审图工具。",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json",
+    "./icon.svg": "./icon.svg"
+  },
+  "files": ["lib", "client.js", "cordis.patch.yml", "icon.svg", "README.md"],
+  "keywords": ["dsh", "dsh-plugin", "aec", "revit", "bim", "cad", "copilot"],
+  "license": "MIT",
+  "icon": "./icon.svg",
+  "engines": { "node": ">=20" },
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": { "platform": "web", "inject": [] }
+  },
+  "peerDependencies": { "@deepseek-ai/cordis": "^4.0.1" }
+}

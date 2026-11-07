@@ -1,0 +1,10 @@
+# AEC Copilot bundle patch：向 profile 组合插入宿主插件行。
+# 客户端半侧由 dsh-client-modules 扫描同一 package.json 的 dsh.client 声明提供。
+- insert:
+    - id: aec-copilot
+      name: aec-copilot-dsh
+      config:
+        # 框架仓库根（runs/、eval/ 产物都在这里）
+        repoRoot: D:/admin/Documents/deepseek-harness/default-workspace/aec-copilot-merged
+        # RevitCommandBridge 状态目录
+        bridgeRoot: C:/Users/admin/AppData/Local/RevitCommandBridge/2024
