@@ -9,6 +9,7 @@
  * 客户端半侧见 client.js（dsh.client 声明，由 dsh-client-modules 提供）。
  */
 import { existsSync, readFileSync, readdirSync, statSync, appendFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 // 加载探针：模块被 cordis 加载时立刻留痕（区分「模块没加载」vs「apply 没跑」）
