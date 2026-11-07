@@ -91,10 +91,14 @@ def main() -> int:
         text, count=1,
     )
     CLIENT.write_text(updated, encoding="utf-8")
-    # 同步 pnpm node_modules 里的插件副本（host 加载路径）
+    # 同步 pnpm node_modules 里的插件副本（低完整性令牌可能写不了 .dsh —— 失败仅警告）
     nm = Path.home() / ".dsh" / "profiles" / "desktop" / "node_modules" / "aec-copilot-dsh"
     if nm.exists():
-        (nm / "client.js").write_text(updated, encoding="utf-8")
+        try:
+            (nm / "client.js").write_text(updated, encoding="utf-8")
+        except PermissionError:
+            print("提示：node_modules 副本同步被拒（低完整性令牌），请手动复制 client.js 到")
+            print(f"  {nm}")
     print(f"快照已内联：eval={snapshot['eval']}, runs={len(snapshot['runs'])}, bridge={snapshot['bridge']['state']}")
     print("刷新 DSH 页面即可生效（无需重启）")
     return 0
