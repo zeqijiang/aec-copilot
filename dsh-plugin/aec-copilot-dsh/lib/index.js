@@ -64,6 +64,33 @@ function listRuns(runsDir, limit = 20) {
 
 function buildApi({ repoRoot, bridgeRoot }) {
   const evalLive = path.join(repoRoot, 'eval', 'results-live');
+  // 产物文件白名单：只允许读这些根下的文件（防路径穿越）
+  const FILE_ROOTS = [path.join(repoRoot, 'runs'), path.join(repoRoot, 'eval'), path.join(repoRoot, 'out')].map((p) => path.resolve(p));
+  const CONTENT_TYPES = {
+    '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.svg': 'image/svg+xml',
+    '.pdf': 'application/pdf', '.ifc': 'text/plain', '.md': 'text/markdown; charset=utf-8',
+    '.json': 'application/json', '.rvt': 'application/octet-stream', '.dwg': 'application/octet-stream',
+    '.dxf': 'application/octet-stream', '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  };
+  function safeFile(abs) {
+    const resolved = path.resolve(abs);
+    if (!FILE_ROOTS.some((root) => resolved.startsWith(root))) return null;
+    if (!existsSync(resolved) || !statSync(resolved).isFile()) return null;
+    return resolved;
+  }
+  function listArtifacts(dir, depth = 0) {
+    if (depth > 2 || !existsSync(dir)) return [];
+    const out = [];
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) out.push(...listArtifacts(full, depth + 1));
+      else {
+        const ext = path.extname(entry.name).toLowerCase();
+        if (CONTENT_TYPES[ext]) out.push({ name: entry.name, path: full, ext, size: statSync(full).size });
+      }
+    }
+    return out;
+  }
   return {
     async 'status.get'() {
       const bridge = readJsonSafe(path.join(bridgeRoot, 'status.json')) ?? { state: 'unknown' };
@@ -91,7 +118,7 @@ function buildApi({ repoRoot, bridgeRoot }) {
           eval_report: reportExists ? path.join(evalLive, 'report.md') : null,
           ifc_demo: existsSync(path.join(repoRoot, 'out')) ? path.join(repoRoot, 'out') : null,
         },
-        tools_hint: 'MCP 连接器 aec：mcp__aec__aec_run / aec_preview / aec_audit …',
+        tools_hint: 'MCP 连接器 aec：mcp__aec__aec_run / aec_preview / aec_audit / revit_drawings / aec_import_drawing …',
       };
     },
     async 'runs.list'(args) {
@@ -100,8 +127,18 @@ function buildApi({ repoRoot, bridgeRoot }) {
       const evalRuns = listRuns(evalLive, limit);
       const seen = new Set();
       return [...main, ...evalRuns]
+        .map((r) => ({
+          ...r,
+          // 附产物清单（screenshot/reports/目录内 PNG·PDF 等）
+          artifacts: r.output_dir ? listArtifacts(r.output_dir).slice(0, 12) : [],
+        }))
         .filter((r) => (seen.has(r.run_id + r.output_dir) ? false : (seen.add(r.run_id + r.output_dir), true)))
         .slice(0, limit);
+    },
+    async 'file.list'(args) {
+      const dir = safeFile(String(args?.path ?? ''));
+      if (!dir) return { artifacts: [] };
+      return { artifacts: listArtifacts(dir).slice(0, 30) };
     },
     async 'report.get'() {
       const file = path.join(evalLive, 'report.md');
@@ -119,6 +156,40 @@ export function apply(ctx, config) {
   try {
     appendFileSync(_probe, `apply entered ${new Date().toISOString()} connection=${typeof ctx.connection}\n`);
   } catch { /* 只读环境忽略 */ }
+
+  // 产物文件流（PNG 内联 / PDF·DWG·RVT·IFC 下载）——白名单限定 runs/eval/out
+  ctx.effect(
+    () =>
+      ctx.webServer.register({
+        kind: 'prefix',
+        path: '/aec/file',
+        handler: async (req, res) => {
+          if (!fence(req)) {
+            res.writeHead(403, { 'content-type': 'application/json' });
+            res.end(JSON.stringify({ ok: false, error: { code: 'forbidden' } }));
+            return;
+          }
+          const url = new URL(req.url ?? '/', 'http://dsh.internal');
+          const target = url.searchParams.get('path') ?? '';
+          const cfg = resolveConfig(config);
+          const FILE_ROOTS = [path.join(cfg.repoRoot, 'runs'), path.join(cfg.repoRoot, 'eval'), path.join(cfg.repoRoot, 'out')].map((p) => path.resolve(p));
+          const resolved = path.resolve(target);
+          if (!FILE_ROOTS.some((root) => resolved.startsWith(root)) || !existsSync(resolved) || !statSync(resolved).isFile()) {
+            res.writeHead(404, { 'content-type': 'application/json' });
+            res.end(JSON.stringify({ ok: false, error: { code: 'not-found', message: '文件不在白名单目录或不存在' } }));
+            return;
+          }
+          const ext = path.extname(resolved).toLowerCase();
+          const types = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.svg': 'image/svg+xml', '.pdf': 'application/pdf', '.ifc': 'text/plain; charset=utf-8', '.md': 'text/markdown; charset=utf-8' };
+          res.writeHead(200, {
+            'content-type': types[ext] ?? 'application/octet-stream',
+            'content-disposition': types[ext] ? 'inline' : `attachment; filename="${encodeURIComponent(path.basename(resolved))}"`,
+          });
+          res.end(readFileSync(resolved));
+        },
+      }),
+    'aec-copilot-dsh: /aec/file routes',
+  );
 
   ctx.effect(
     () =>

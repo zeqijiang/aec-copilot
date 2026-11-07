@@ -31,6 +31,8 @@ os.environ.setdefault("AEC_REVIT_WAIT", "240")
 from . import __version__  # noqa: E402
 from .audit import audit_model  # noqa: E402
 from .compiler import compile_plan  # noqa: E402
+from .drawing_reader import read_drawing  # noqa: E402
+from .drawings import drawings_tool  # noqa: E402
 from .engines.registry import create_engine  # noqa: E402
 from .errors import AECError  # noqa: E402
 from .models import Plan  # noqa: E402
@@ -70,6 +72,16 @@ def tool_defs() -> list[dict[str, Any]]:
             {"steps": {"type": "array", "items": {"type": "object"}}, "preview": {"type": "boolean"}, "document_title": {"type": "string"}}, ["steps"])},
         {"name": "revit_new_project", "description": "桥级原语：新建（并可另存）Revit 项目文档", "inputSchema": _obj(
             {"save_path": {"type": "string"}, "overwrite_file": {"type": "boolean"}})},
+        {"name": "revit_drawings", "description": "一键出图工作流：平面+剖面+立面+3D → 图纸排布(A-101/A-201) → 门窗明细表 → 可选 DWG/PNG 导出。"
+            "args: {workflow:'full_set', levels:['F1','F2'], include_schedule:true, export_formats:['dwg','png'], output_dir, preview}", "inputSchema": _obj(
+            {"workflow": {"type": "string"}, "levels": {"type": "array", "items": {"type": "string"}},
+             "include_schedule": {"type": "boolean"}, "export_formats": {"type": "array", "items": {"type": "string"}},
+             "output_dir": {"type": "string"}, "preview": {"type": "boolean"}, "sheet_number_prefix": {"type": "string"}})},
+        {"name": "aec_export", "description": "导出当前文档：format = png/dwg/dxf/ifc（ifc 走演示脚本更完整），指定 view_ids 或 active_view", "inputSchema": _obj(
+            {"format": {"enum": ["png", "jpg", "dwg", "dxf", "ifc"]}, "view_ids": {"type": "array", "items": {"type": "number"}},
+             "active_view": {"type": "boolean"}, "output_dir": {"type": "string"}}, ["format"])},
+        {"name": "aec_import_drawing", "description": "图纸识别：DWG/DXF → 图层/实体统计/文字/标注/边界 的结构化报告（Agent 由此『看懂』一张图）。DWG 需本机 AutoCAD 运行", "inputSchema": _obj(
+            {"path": {"type": "string"}}, ["path"])},
     ]
 
 
@@ -139,6 +151,29 @@ def call_tool(name: str, args: dict[str, Any]) -> str:
             res = get_engine("revit").send({"operation": "new_project",
                                             "args": {"save_path": args.get("save_path"), "overwrite_file": bool(args.get("overwrite_file", False))}})
             return json.dumps(res, ensure_ascii=False, default=str)
+        if name == "revit_drawings":
+            from aec_mcp.engines import get_engine
+
+            eng = get_engine("revit")
+            out = drawings_tool(args, execute=lambda steps, preview: eng.execute(steps, preview=preview))
+            return json.dumps(out, ensure_ascii=False, default=str)
+        if name == "aec_export":
+            from aec_mcp.engines import get_engine
+
+            fmt = args["format"].lower()
+            out_dir = args.get("output_dir") or "out/export"
+            step_args: dict[str, Any] = {"format": fmt, "output_path": out_dir}
+            if args.get("view_ids"):
+                step_args["view_ids"] = args["view_ids"]
+            elif fmt in ("png", "jpg"):
+                step_args["active_view"] = bool(args.get("active_view", True))
+            res = get_engine("revit").send({"operation": "execute_plan",
+                                            "args": {"steps": [{"id": "aec_export", "operation": "export", "args": step_args}]},
+                                            "preview": False})
+            return json.dumps(res, ensure_ascii=False, default=str)
+        if name == "aec_import_drawing":
+            report = read_drawing(args["path"])
+            return json.dumps(report, ensure_ascii=False)
         raise AECError("E_NOT_FOUND", f"未知工具 {name!r}")
     except AECError as e:
         return json.dumps({"ok": False, "code": e.code, "message": e.message}, ensure_ascii=False, default=str)

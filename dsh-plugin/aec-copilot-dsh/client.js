@@ -50,6 +50,40 @@ window.__ModuleLoader__.load({
         background: ok ? "rgba(46,160,67,.18)" : "rgba(218,54,51,.18)",
         color: ok ? "#2ea043" : "#da3633" } }, label);
 
+    const ICONS = { ".png": "🖼", ".jpg": "🖼", ".jpeg": "🖼", ".pdf": "📄", ".xlsx": "📊", ".rvt": "🏠", ".dwg": "📐", ".dxf": "📐", ".ifc": "🧩" };
+
+    function ArtifactsCard({ run }) {
+      const [arts, setArts] = useState(run.artifacts ?? []);
+      const [open, setOpen] = useState(false);
+      const [preview, setPreview] = useState(null);
+      if (!open) {
+        return h("div", { style: TD },
+          h("button", { style: { ...BTN, padding: "1px 8px", fontSize: 11 }, onClick: async () => {
+            setOpen(true);
+            try {
+              const j = await (await fetch(`/aec/api/file.list?path=${encodeURIComponent(run.output_dir)}`)).json();
+              if (j.ok) setArts(j.result.artifacts);
+            } catch (e) { /* 快照数据兜底 */ }
+          } }, `产物 ${run.artifacts?.length ?? 0}`));
+      }
+      const imgs = arts.filter((a) => [".png", ".jpg", ".jpeg"].includes(a.ext));
+      const docs = arts.filter((a) => ![".png", ".jpg", ".jpeg"].includes(a.ext));
+      return h("div", { style: { ...TD, minWidth: 220 } },
+        h("button", { style: { ...BTN, padding: "1px 8px", fontSize: 11 }, onClick: () => setOpen(false) }, "收起 ▲"),
+        docs.length ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 4, marginTop: 4 } },
+          docs.map((a, i) => h("a", { key: i, href: `/aec/file?path=${encodeURIComponent(a.path)}`, target: "_blank",
+            style: { ...BTN, textDecoration: "none", fontSize: 11 } }, `${ICONS[a.ext] ?? "📎"} ${a.name}`))) : null,
+        imgs.length ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 } },
+          imgs.map((a, i) => h("img", { key: i, src: `/aec/file?path=${encodeURIComponent(a.path)}`,
+            onClick: () => setPreview(a), title: a.name,
+            style: { height: 64, border: "1px solid var(--dsw-alias-border-l1, rgba(127,127,127,.3))", borderRadius: 6, cursor: "zoom-in" } }))) : null,
+        preview ? h("div", { style: { position: "fixed", inset: 0, background: "rgba(0,0,0,.75)", zIndex: 999,
+          display: "flex", alignItems: "center", justifyContent: "center" },
+          onClick: () => setPreview(null) },
+          h("img", { src: `/aec/file?path=${encodeURIComponent(preview.path)}`, style: { maxHeight: "90%", maxWidth: "90%" } })) : null
+      );
+    }
+
     function StatusPage() {
       const [status, setStatus] = useState(null);
       const [runs, setRuns] = useState([]);
@@ -99,13 +133,14 @@ window.__ModuleLoader__.load({
         h("table", { style: { width: "100%", borderCollapse: "collapse", marginBottom: 16 } },
           h("thead", null, h("tr", null,
             h("th", { style: TH }, "状态"), h("th", { style: TH }, "引擎"), h("th", { style: TH }, "构件"),
-            h("th", { style: TH }, "尝试"), h("th", { style: TH }, "指令"))),
+            h("th", { style: TH }, "尝试"), h("th", { style: TH }, "指令"), h("th", { style: TH }, "产物"))),
           h("tbody", null, runs.map((r, i) => h("tr", { key: i },
             h("td", { style: TD }, r.status === "passed" ? badge(true, "passed") : badge(false, r.status)),
             h("td", { style: TD }, r.engine),
             h("td", { style: TD }, String(r.elements)),
             h("td", { style: TD }, String(r.attempts)),
-            h("td", { style: TD }, r.instruction))))),
+            h("td", { style: { ...TD, maxWidth: 320 } }, r.instruction),
+            h(ArtifactsCard, { run: r, key: `a${i}` }))))),
 
         report ? h("details", null,
           h("summary", { style: { cursor: "pointer", fontSize: 12, opacity: 0.75 } }, "真机评测报告（展开）"),
