@@ -1,0 +1,34 @@
+{
+  "_comment": "live 后端：三引擎经统一 aec-mcp server（契约兼容层）。revit=桥 2.0 all-or-nothing；acad=ezdxf 离线 DXF；sw=COM。门/窗与装配为 M2。",
+  "engines": {
+    "revit": {
+      "command": ["D:\\admin\\Documents\\deepseek-harness\\default-workspace\\aec-copilot\\.venv\\Scripts\\python.exe", "-m", "aec_mcp.server"],
+      "cwd": "D:\\admin\\Documents\\deepseek-harness\\default-workspace\\aec-copilot",
+      "tools": {
+        "revit_create_level": "revit_create_level",
+        "revit_create_grid": "revit_create_grid",
+        "revit_create_wall": "revit_create_wall",
+        "revit_create_column": "revit_create_column",
+        "revit_create_slab": "revit_create_slab",
+        "revit_create_door": "revit_create_door",
+        "revit_create_window": "revit_create_window"
+      },
+      "transactions": { "begin": "aec_txn_begin", "commit": "aec_txn_commit", "rollback": "aec_txn_rollback" },
+      "manifest_tool": "aec_manifest"
+    },
+    "acad": {
+      "command": ["D:\\admin\\Documents\\deepseek-harness\\default-workspace\\aec-copilot\\.venv\\Scripts\\python.exe", "-m", "aec_mcp.server"],
+      "cwd": "D:\\admin\\Documents\\deepseek-harness\\default-workspace\\aec-copilot",
+      "tools": { "acad_draw_polyline": "acad_draw_polyline" },
+      "transactions": { "begin": "aec_txn_begin", "commit": "aec_txn_commit", "rollback": "aec_txn_rollback" },
+      "manifest_tool": "aec_manifest"
+    },
+    "sw": {
+      "command": ["D:\\admin\\Documents\\deepseek-harness\\default-workspace\\aec-copilot\\.venv\\Scripts\\python.exe", "-m", "aec_mcp.server"],
+      "cwd": "D:\\admin\\Documents\\deepseek-harness\\default-workspace\\aec-copilot",
+      "tools": { "sw_create_part": "sw_create_part", "sw_create_assembly": "sw_create_assembly" },
+      "transactions": { "begin": "aec_txn_begin", "commit": "aec_txn_commit", "rollback": "aec_txn_rollback" },
+      "manifest_tool": "aec_manifest"
+    }
+  }
+}

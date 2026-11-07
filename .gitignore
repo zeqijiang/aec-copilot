@@ -29,3 +29,4 @@ Thumbs.db
 # Secrets (examples only are versioned)
 *mcp-config.json
 !mcp-config.example.json
+pytest-of-admin/
