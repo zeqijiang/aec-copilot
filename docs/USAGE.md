@@ -3,8 +3,8 @@
 > 一句中文 → Revit/AutoCAD/SolidWorks 里的真实模型 → 自动校验 → Excel/PDF 报告。
 > 不是聊天机器人，是有手有眼的工业软件 Agent。
 
-- 仓库：https://github.com/zeqijiang/aec-copilot （main 已含真机后端）
-- 状态：**Revit 2024 真机全链路已验证**（2026-11-07，50 例评测 48/50，Revit 类 46/46=100%）
+- 仓库：https://github.com/zeqijiang/aec-copilot （main 已含真机后端 + 全功能 MCP 插件）
+- 状态：**Revit 2024 真机全链路已验证**（2026-11-07，50 例评测 48/50，Revit 类 46/46=100%）；**IFC 数据互通已闭环**（中文→真模型→ISO-10303-21 标准文件，8 墙/3 板/4 标高实体验证）
 
 ---
 
@@ -30,7 +30,9 @@
 | **报告产出** | 每次执行自动出 Excel 构件明细 + 中文 PDF 报告 + run.json（机读） | 每次运行 |
 | **CAD 出图** | 多段线等 → 真实 DXF 文件（ezdxf 离线，无需 AutoCAD） | polyline 2/2 |
 | **评测基准** | 50 例指令真机跑批，通过率/耗时/差异落盘，可复现 | `eval/results-live/report.md` |
-| **MCP 工具化** | aec-mcp 可挂进 DSH / Claude / Cursor 当工具用 | DSH 已挂载（`mcp__aec__*`） |
+| **MCP 工具化** | aec-mcp 可挂进 DSH / Claude / Cursor 当工具用（DSH 已挂载，`mcp__aec__*` 七件套） | DSH 已挂载 |
+| **IFC 数据互通** | 中文建模 → IFC 标准格式落盘（打"二次建模"：Revit 模型直接交给下游造价/算量/施工软件） | 8 墙/3 板/4 标高实体，ISO-10303-21 ✅ |
+| **插件化** | 全功能 server（`python -m aec_copilot.mcp_full`）+ DirectEngine 进程内真机后端（无子进程/无路径配置） | 33 测试全绿 |
 
 ## 三、你自己怎么用（Windows 本机）
 
@@ -83,6 +85,13 @@ uv run aec tools                         # 工具目录
 uv run aec run "在 0,0 画一面 6m 长的墙" --engine acad --offline   # 出 DXF+PNG
 ```
 
+**IFC 导出**（反"二次建模"演示）：
+```powershell
+$env:AEC_REVIT_FRESH_DOC = "1"
+uv run python scripts/export_ifc.py "生成一栋12m×8m的两层建筑，层高3.3m，墙厚200mm"
+# → 19 构件建模 → model.ifc（ISO-10303-21，IFCWALLSTANDARDCASE×8 / IFCSLAB×3 / IFCBUILDINGSTOREY×4）
+```
+
 ### 在 DSH 里直接对话（已挂载，全局 `aec` 前缀）
 新开会话直接说：
 > 在 Revit 里生成一个 6m×4m 的房间，先给我看计划，确认后执行并导出明细表
@@ -133,15 +142,13 @@ uv run aec eval        # 50 例模拟基准
 ## 七、当前限制与下一步
 
 **限制（诚实清单）**
-- IFC 导出：建模链路通，桥的 ifc 分支缺事务包裹；补丁已写但桥源码树有两处**历史遗留** API 不兼容（`Revision.NumberType`、`NewFloor`，与补丁无关），需按 2024 API 移植后重编译；
 - SolidWorks：需 SW 已启动；P0 仅 box 拉伸零件；装配需"将p1和p2创建装配体"句式；
-- acad 真机 = ezdxf 离线 DXF（COM 直连路径在引擎层仓库，未接契约层）；
-- `config/mcp.live.json` 内是本机绝对路径，他人需手改；
-- 引擎层与框架分属两个仓库，未 vendor。
+- IFC：桥源码已打 2024 API 补丁（`Revision.NumberType` 移除→Sequence 管理；`NewFloor`→`Floor.Create`+CurveLoop），补丁版 DLL 已部署（原版备份 `.bak`）；
+- acad 真机 = ezdxf 离线 DXF（COM 直连路径在引擎层仓库，未接契约层）。
 
 **下一步优先级**
-1. aec-mcp vendor 进 monorepo（别人 clone 即全套）；
-2. 桥源码移植到 2024 API → 重编译 → IFC 导出闭环（打"二次建模"）；
+1. ~~aec-mcp vendor 进 monorepo~~ ✅ 已完成（clone 即全套）；
+2. ~~IFC 导出闭环~~ ✅ 已完成（桥补丁 + 演示脚本）；
 3. LLM planner 接入与规则版对比评测（token 主战场）；
-4. SW 零件/装配真机用例补跑；
+4. SW 零件/装配真机用例补跑（启动 SOLIDWORKS 即可）；
 5. Web 控制台接 live 后端 + 60s 演示视频。
