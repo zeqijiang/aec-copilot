@@ -1,0 +1,118 @@
+{
+  "rules": [
+    {
+      "id": "v01_wall",
+      "category": "wall",
+      "status": "passed",
+      "ms": 1,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "v02_wall",
+      "category": "wall",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "v09_room",
+      "category": "room",
+      "status": "failed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": [
+        "E_CONSTRAINT: Cannot parse instruction deterministically. Use a supported example or configure the constrained LLM fallback."
+      ]
+    },
+    {
+      "id": "v17_frame",
+      "category": "frame",
+      "status": "failed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": [
+        "E_CONSTRAINT: Frame needs width × depth"
+      ]
+    },
+    {
+      "id": "v23_building",
+      "category": "building",
+      "status": "failed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": [
+        "E_CONSTRAINT: Building needs width × depth"
+      ]
+    },
+    {
+      "id": "v33_level",
+      "category": "level",
+      "status": "failed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": [
+        "E_CONSTRAINT: Level needs an elevation"
+      ]
+    },
+    {
+      "id": "v37_column",
+      "category": "column",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "v41_slab",
+      "category": "slab",
+      "status": "failed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": [
+        "E_CONSTRAINT: Slab needs width × depth"
+      ]
+    },
+    {
+      "id": "v45_opening",
+      "category": "opening",
+      "status": "failed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": [
+        "E_CONSTRAINT: Room needs width × depth, e.g. 6m×4m"
+      ]
+    },
+    {
+      "id": "v47_polyline",
+      "category": "polyline",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "v49_part",
+      "category": "part",
+      "status": "failed",
+      "ms": 3,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": [
+        "E_CONSTRAINT: Part needs 100mm×50mm×20mm or 圆柱直径×高度"
+      ]
+    }
+  ],
+  "llm": null
+}

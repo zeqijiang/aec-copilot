@@ -1,0 +1,2 @@
+{ "id": "v47_polyline", "original": "47_polyline", "category": "polyline", "engine": "acad",
+  "instruction": "在AutoCAD里用多段线画闭合三角形：(0,0)、(6000,0)、(6000,4000)" }

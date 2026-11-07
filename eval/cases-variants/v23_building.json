@@ -1,0 +1,2 @@
+{ "id": "v23_building", "original": "23_building", "category": "building", "engine": "revit",
+  "instruction": "盖一栋30米乘20米的两层小房子，层高3.6米，外墙200厚，中间砌一道隔墙，四个角都放柱子" }

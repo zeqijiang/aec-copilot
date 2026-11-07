@@ -1,0 +1,457 @@
+{
+  "rules": [
+    {
+      "id": "01_wall",
+      "category": "wall",
+      "status": "passed",
+      "ms": 2,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "02_wall",
+      "category": "wall",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "03_wall",
+      "category": "wall",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "04_wall",
+      "category": "wall",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "05_wall",
+      "category": "wall",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "06_wall",
+      "category": "wall",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "07_wall",
+      "category": "wall",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "08_wall",
+      "category": "wall",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "09_room",
+      "category": "room",
+      "status": "passed",
+      "ms": 5,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "10_room",
+      "category": "room",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "11_room",
+      "category": "room",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "12_room",
+      "category": "room",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "13_room",
+      "category": "room",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "14_room",
+      "category": "room",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "15_room",
+      "category": "room",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "16_room",
+      "category": "room",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "17_frame",
+      "category": "frame",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "18_frame",
+      "category": "frame",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "19_frame",
+      "category": "frame",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "20_frame",
+      "category": "frame",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "21_frame",
+      "category": "frame",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "22_frame",
+      "category": "frame",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "23_building",
+      "category": "building",
+      "status": "passed",
+      "ms": 1,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "24_building",
+      "category": "building",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "25_building",
+      "category": "building",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "26_building",
+      "category": "building",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "27_building",
+      "category": "building",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "28_building",
+      "category": "building",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "29_building",
+      "category": "building",
+      "status": "passed",
+      "ms": 1,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "30_building",
+      "category": "building",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "31_building",
+      "category": "building",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "32_building",
+      "category": "building",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "33_level",
+      "category": "level",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "34_level",
+      "category": "level",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "35_level",
+      "category": "level",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "36_level",
+      "category": "level",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "37_column",
+      "category": "column",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "38_column",
+      "category": "column",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "39_column",
+      "category": "column",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "40_column",
+      "category": "column",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "41_slab",
+      "category": "slab",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "42_slab",
+      "category": "slab",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "43_slab",
+      "category": "slab",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "44_slab",
+      "category": "slab",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "45_opening",
+      "category": "opening",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "46_opening",
+      "category": "opening",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "47_polyline",
+      "category": "polyline",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "48_polyline",
+      "category": "polyline",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "49_part",
+      "category": "part",
+      "status": "passed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": []
+    },
+    {
+      "id": "50_assembly",
+      "category": "assembly",
+      "status": "failed",
+      "ms": 0,
+      "fallback": false,
+      "tokens": 0,
+      "diffs": [
+        "E_CONSTRAINT: Assembly instruction needs part IDs, e.g. 将p1和p2创建装配体"
+      ]
+    }
+  ],
+  "llm": null
+}
