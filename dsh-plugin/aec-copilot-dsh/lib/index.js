@@ -8,13 +8,19 @@
  *
  * 客户端半侧见 client.js（dsh.client 声明，由 dsh-client-modules 提供）。
  */
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync, appendFileSync } from 'node:fs';
 import path from 'node:path';
+
+// 加载探针：模块被 cordis 加载时立刻留痕（区分「模块没加载」vs「apply 没跑」）
+const _probe = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'host-load.log');
+try {
+  appendFileSync(_probe, `loaded ${new Date().toISOString()} url=${import.meta.url}\n`);
+} catch { /* 只读环境忽略 */ }
 
 export const name = 'aec-copilot-dsh';
 
-/** 插件激活前必须就位的服务。 */
-export const inject = ['webServer'];
+/** 插件激活前必须就位的服务（与录阶完全一致）。 */
+export const inject = ['webServer', 'connection'];
 
 function resolveConfig(config = {}) {
   return {
@@ -107,7 +113,11 @@ function buildApi({ repoRoot, bridgeRoot }) {
 export function apply(ctx, config) {
   const cfg = resolveConfig(config);
   const api = buildApi(cfg);
+  // 与官方 /api 网关相同的连接鉴权围栏；connection 服务缺失时拒绝所有请求（录阶同语义）。
   const fence = (req) => (ctx.connection?.requestRejection ? ctx.connection.requestRejection(req) === undefined : false);
+  try {
+    appendFileSync(_probe, `apply entered ${new Date().toISOString()} connection=${typeof ctx.connection}\n`);
+  } catch { /* 只读环境忽略 */ }
 
   ctx.effect(
     () =>
