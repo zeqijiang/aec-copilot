@@ -88,6 +88,9 @@ def tool_defs() -> list[dict[str, Any]]:
         {"name": "aec_quantity", "description": "真模型工程量指标：从 Revit 构件读墙体长度/厚/高 → 汇总砌体体积、模板面积、各层统计，"
             "并按建筑面积(gfa，可传或按首层墙外包推算)出单方含量指标（对标造价开项指标）", "inputSchema": _obj(
             {"gfa": {"type": "number"}, "categories": {"type": "array", "items": {"type": "string"}}})},
+        {"name": "aec_cost_estimate", "description": "设计→造价：真模型工程量 → GB50854 清单映射 → 组价（演示价目，可导入真实定额）"
+            "→ 费用结构分析 → 总造价报告（JSON + Markdown + Excel）。gfa 可传或按楼板推算", "inputSchema": _obj(
+            {"gfa": {"type": "number"}, "price_table": {"type": "string"}, "output_dir": {"type": "string"}})},
     ]
 
 
@@ -267,6 +270,24 @@ def call_tool(name: str, args: dict[str, Any]) -> str:
                 "gfa_source": "provided" if args.get("gfa") else ("derived_from_floors" if floor_area else None),
                 "note": "混凝土体积按墙足印几何推算（真构件逐个溯源）；钢筋/砌体量需构件参数读取（M3 扩展）",
             }, ensure_ascii=False)
+        if name == "aec_cost_estimate":
+            from . import costing
+
+            qty = json.loads(call_tool("aec_quantity", {"gfa": args.get("gfa")}))
+            if qty.get("walls_count") in (None, 0):
+                return json.dumps({"ok": False, "code": "E_NOT_FOUND",
+                                   "message": "当前 Revit 文档没有可计量的墙体（先建模或打开含墙模型）"}, ensure_ascii=False)
+            prices = costing.load_prices(Path(args["price_table"])) if args.get("price_table") else None
+            report = costing.estimate(qty, gfa=args.get("gfa"), prices=prices)
+            out_dir = Path(args.get("output_dir") or (REPO_ROOT / "runs" / "cost"))
+            md_path = out_dir / "cost-report.md"
+            md_path.parent.mkdir(parents=True, exist_ok=True)
+            md_path.write_text(costing.to_markdown(report), encoding="utf-8")
+            xlsx_path = costing.to_excel(report, out_dir / "cost-report.xlsx")
+            return json.dumps({"ok": True, "汇总": report["汇总"], "费用结构": report["费用结构"],
+                               "清单项数": len(report["清单明细"]),
+                               "markdown": str(md_path), "excel": str(xlsx_path),
+                               "免责声明": report["免责声明"]}, ensure_ascii=False)
         raise AECError("E_NOT_FOUND", f"未知工具 {name!r}")
     except AECError as e:
         return json.dumps({"ok": False, "code": e.code, "message": e.message}, ensure_ascii=False, default=str)
