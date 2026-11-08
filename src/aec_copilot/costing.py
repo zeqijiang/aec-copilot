@@ -23,7 +23,10 @@ MAPPING = {
 }
 FORMWORK = {"code": "011702002", "name": "直形墙模板", "unit": "m²", "qty_key": "formwork_m2",
             "is_measure": True}  # 措施项目
-
+FORMWORK_SLAB = {"code": "011702015", "name": "平板模板", "unit": "m²", "is_measure": True}
+REBAR = {"code": "010515001", "name": "现浇构件钢筋", "unit": "t", "is_measure": False}
+# 含钢量指标（kg/m³ 混凝土，行业经验值——真模型无配筋构件时的指标法估算）
+REBAR_RATES = {"wall": 110.0, "floor": 100.0, "column": 130.0}
 DEFAULT_RATES = {"管理费利润": 0.13, "规费": 0.025, "税金": 0.09}
 
 
@@ -35,8 +38,15 @@ def load_prices(path: Path | None = None) -> dict[str, dict]:
     return json.loads(Path(p).read_text(encoding="utf-8"))
 
 
-def estimate(quantity: dict, *, gfa: float | None = None, prices: dict[str, dict] | None = None) -> dict:
-    """quantity = aec_quantity 的输出（walls/totals/floor_area…）。返回造价报告 dict。"""
+def estimate(quantity: dict, *, gfa: float | None = None, prices: dict[str, dict] | None = None,
+             excavation_depth_m: float = 1.5, slab_thickness_m: float = 0.12) -> dict:
+    """quantity = aec_quantity 的输出（walls/totals/floor_area…）。返回造价报告 dict。
+
+    清单项（GB50854）：
+      主体：直形墙 / 平板 / 现浇构件钢筋（含量指标法）
+      措施：直形墙模板 / 平板模板
+      土石方：挖一般土方 / 土方回填（埋深按 excavation_depth_m 假设，可传参修改）
+    """
     prices = prices or load_prices()
     totals = quantity.get("totals") or {}
     wall_volume = totals.get("wall_volume_m3", 0.0)
@@ -47,26 +57,43 @@ def estimate(quantity: dict, *, gfa: float | None = None, prices: dict[str, dict
 
     items: list[dict] = []
 
-    def add(code: str, name: str, unit: str, qty: float, *, measure: bool = False, note: str = ""):
+    def add(code: str, name: str, unit: str, qty: float, *, cat: str = "分部分项", note: str = ""):
         price_row = prices.get(code) or {}
         unit_price = float(price_row.get("综合单价", 0))
         amount = round(qty * unit_price, 2)
         items.append({"编码": code, "名称": name, "单位": unit,
                       "工程量": round(qty, 2), "综合单价": unit_price, "合价": amount,
-                      "类别": "措施项目" if measure else "分部分项", "备注": note or price_row.get("备注", "")})
+                      "类别": cat, "备注": note or price_row.get("备注", "")})
 
-    # 分部分项：墙（直形墙混凝土）、板（平板混凝土，板厚按 120mm 演示假设）
-    wall = MAPPING["wall"]
-    add(wall["code"], wall["name"], wall["unit"], wall_volume, note="真模型墙体逐构件汇总")
-    slab_volume = floor_area_m2 * 0.12 / max(floors, 1) * floors  # 每层板厚 120mm 演示
-    slab_volume = floor_area_m2 * 0.12  # 全部楼板合计（含多层板面积已含）
-    add(MAPPING["floor"]["code"], MAPPING["floor"]["name"], MAPPING["floor"]["unit"], round(slab_volume, 2),
-        note="板厚 120mm 演示假设（板参数读取为 M3 扩展）")
-    # 措施：模板
-    add(FORMWORK["code"], FORMWORK["name"], FORMWORK["unit"], formwork_m2, measure=True, note="两侧大面+顶面")
+    # ---- 主体结构 ----
+    add(MAPPING["wall"]["code"], MAPPING["wall"]["name"], "m³", wall_volume,
+        note="真模型墙体逐构件汇总")
+    slab_volume = round(floor_area_m2 * slab_thickness_m, 2)
+    add(MAPPING["floor"]["code"], MAPPING["floor"]["name"], "m³", slab_volume,
+        note=f"板厚 {slab_thickness_m*1000:.0f}mm 演示假设（板参数读取为 M3 扩展）")
+    rebar_t = (wall_volume * REBAR_RATES["wall"] + slab_volume * REBAR_RATES["floor"]) / 1000
+    add(REBAR["code"], REBAR["name"], "t", round(rebar_t, 2),
+        note=f"含量指标法（墙 {REBAR_RATES['wall']:.0f} / 板 {REBAR_RATES['floor']:.0f} kg/m³，真模型无配筋构件）")
+
+    # ---- 措施项目 ----
+    add(FORMWORK["code"], FORMWORK["name"], "m²", formwork_m2, cat="措施项目", note="两侧大面+顶面")
+    add(FORMWORK_SLAB["code"], FORMWORK_SLAB["name"], "m²", round(floor_area_m2, 2), cat="措施项目", note="板底面积")
+
+    # ---- 土石方（埋深假设可传参）----
+    footprint = gfa / floors if (gfa and floors) else floor_area_m2 / max(floors - 1, 1)
+    excavation_m3 = round(footprint * excavation_depth_m, 2)
+    add("010101001", "挖一般土方", "m³", excavation_m3, cat="土石方",
+        note=f"埋深 {excavation_depth_m}m 假设（可在参数修改）")
+    embedded = wall_volume / floors  # 埋置墙体近似
+    backfill_m3 = round(max(excavation_m3 - embedded - footprint * 0.1, 0), 2)
+    add("010103001", "土方回填", "m³", backfill_m3, cat="土石方",
+        note=f"挖方扣除埋置构件与 {100}mm 垫层（近似）")
+    add("010401006", "基础垫层", "m³", round(footprint * 0.1, 2), cat="分部分项",
+        note="垫层厚 100mm 演示假设")
 
     sub_total = round(sum(i["合价"] for i in items if i["类别"] == "分部分项"), 2)
     measure_total = round(sum(i["合价"] for i in items if i["类别"] == "措施项目"), 2)
+    earth_total = round(sum(i["合价"] for i in items if i["类别"] == "土石方"), 2)
     fee_base = sub_total + measure_total
     mgmt = round(fee_base * DEFAULT_RATES["管理费利润"], 2)
     statutory = round((fee_base + mgmt) * DEFAULT_RATES["规费"], 2)
@@ -80,14 +107,15 @@ def estimate(quantity: dict, *, gfa: float | None = None, prices: dict[str, dict
 
     return {
         "项目概况": {"建筑面积_m2": round(gfa, 1) if gfa else None, "楼层数": floors,
-                     "数据来源": "Revit 真实构件几何（逐构件可溯源）"},
+                     "基础埋深_假设_m": excavation_depth_m, "板厚_假设_mm": slab_thickness_m * 1000,
+                     "数据来源": "Revit 真实构件几何（逐构件可溯源）；钢筋/土方为指标与假设推算"},
         "清单明细": items,
-        "汇总": {"分部分项": sub_total, "措施项目": measure_total, "管理费利润": mgmt,
-                 "规费": statutory, "税金": tax, "总造价": total},
+        "汇总": {"分部分项": sub_total, "措施项目": measure_total, "土石方": earth_total,
+                 "管理费利润": mgmt, "规费": statutory, "税金": tax, "总造价": total},
         "费用结构": structure_pct,
         "报告状态": {"清单项": len(items), "价目表": "演示价目（导入真实定额自动替换）",
-                     "工程量来源": "真模型几何推算，逐构件可溯源"},
-        "免责声明": "演示用途：综合单价为演示数据，不构成计价依据；导入真实定额后结果方可用于参考估算。",
+                     "工程量来源": "真模型几何推算（墙/板逐构件）；钢筋=含量指标法；土方=埋深假设"},
+        "免责声明": "演示用途：综合单价为演示数据，土方/钢筋/垫层含假设参数；导入真实定额并核校假设后结果方可用于参考估算。",
     }
 
 
