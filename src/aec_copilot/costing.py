@@ -68,12 +68,17 @@ def estimate(quantity: dict, *, gfa: float | None = None, prices: dict[str, dict
     # ---- 主体结构 ----
     add(MAPPING["wall"]["code"], MAPPING["wall"]["name"], "m³", wall_volume,
         note="真模型墙体逐构件汇总")
+    column_volume = float(totals.get("column_volume_m3") or 0.0)
+    if column_volume > 0:
+        add(MAPPING["column"]["code"], MAPPING["column"]["name"], "m³", column_volume,
+            note="真模型方柱逐构件汇总（DirectShape）")
     slab_volume = round(floor_area_m2 * slab_thickness_m, 2)
     add(MAPPING["floor"]["code"], MAPPING["floor"]["name"], "m³", slab_volume,
         note=f"板厚 {slab_thickness_m*1000:.0f}mm 演示假设（板参数读取为 M3 扩展）")
-    rebar_t = (wall_volume * REBAR_RATES["wall"] + slab_volume * REBAR_RATES["floor"]) / 1000
+    rebar_t = (wall_volume * REBAR_RATES["wall"] + column_volume * REBAR_RATES["column"]
+               + slab_volume * REBAR_RATES["floor"]) / 1000
     add(REBAR["code"], REBAR["name"], "t", round(rebar_t, 2),
-        note=f"含量指标法（墙 {REBAR_RATES['wall']:.0f} / 板 {REBAR_RATES['floor']:.0f} kg/m³，真模型无配筋构件）")
+        note=f"含量指标法（墙 {REBAR_RATES['wall']:.0f} / 柱 {REBAR_RATES['column']:.0f} / 板 {REBAR_RATES['floor']:.0f} kg/m³，真模型无配筋构件）")
 
     # ---- 措施项目 ----
     add(FORMWORK["code"], FORMWORK["name"], "m²", formwork_m2, cat="措施项目", note="两侧大面+顶面")

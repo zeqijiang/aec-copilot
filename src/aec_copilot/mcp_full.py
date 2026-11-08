@@ -231,14 +231,17 @@ def call_tool(name: str, args: dict[str, Any]) -> str:
             q = eng.send({"operation": "execute_plan", "args": {"steps": [
                 {"id": "qw", "operation": "query_elements", "args": {"category": "OST_Walls", "limit": 200}},
                 {"id": "qf", "operation": "query_elements", "args": {"category": "OST_Floors", "limit": 100}},
+                {"id": "qc", "operation": "query_elements", "args": {"category": "OST_GenericModel", "limit": 100}},
             ]}, "preview": False}, wait_seconds=120)
-            walls, floors = [], []
+            walls, floors, generics = [], [], []
             for s in (q.get("data") or {}).get("steps", []):
                 sid, elements = s.get("id"), (s.get("data") or {}).get("elements", [])
                 if sid == "qw":
                     walls = elements
                 elif sid == "qf":
                     floors = elements
+                elif sid == "qc":
+                    generics = elements
 
             def _bbox_span(el, axis):
                 bb = el.get("bounding_box") or {}
@@ -261,19 +264,34 @@ def call_tool(name: str, args: dict[str, Any]) -> str:
                 walls_detail.append({"name": w.get("name"), "length_mm": round(length, 1),
                                      "thickness_mm": round(thickness, 1), "height_mm": round(height, 1),
                                      "volume_m3": round(volume, 2)})
+            # DirectShape 方柱（OST_GenericModel 中近立方柱体）
+            columns_detail, column_volume = [], 0.0
+            for g in generics:
+                bb = g.get("bounding_box")
+                if not bb:
+                    continue
+                dx = _bbox_span(g, "x"); dy = _bbox_span(g, "y"); dz = _bbox_span(g, "z")
+                if 400 <= dx <= 700 and 400 <= dy <= 700 and dz > 2000:  # 柱形判据
+                    v = dx * dy * dz / 1e9
+                    column_volume += v
+                    columns_detail.append({"name": g.get("name"), "section_mm": f"{round(dx)}x{round(dy)}",
+                                           "height_mm": round(dz, 1), "volume_m3": round(v, 2)})
             floor_area = sum((_bbox_span(f, "x") * _bbox_span(f, "y")) / 1e6 for f in floors)
             gfa = float(args.get("gfa") or 0) or round(floor_area, 1) or None
             return json.dumps({
                 "walls_count": len(walls_detail), "walls": walls_detail[:40],
+                "columns_count": len(columns_detail), "columns": columns_detail[:20],
+                "column_volume_m3": round(column_volume, 2),
                 "totals": {"wall_length_m": round(total_len / 1000, 1),
                            "wall_volume_m3": round(total_volume, 2),
                            "wall_formwork_m2": round(total_formwork, 1),
+                           "column_volume_m3": round(column_volume, 2),
                            "floor_area_m2": round(floor_area, 1),
                            "floors_count": len(floors)},
                 "indicators": ({"per_gfa_wall_volume_m3_per_m2": round(total_volume / gfa, 3),
                                 "per_gfa_wall_formwork_m2_per_m2": round(total_formwork / gfa, 2)} if gfa else None),
                 "gfa_source": "provided" if args.get("gfa") else ("derived_from_floors" if floor_area else None),
-                "note": "混凝土体积按墙足印几何推算（真构件逐个溯源）；钢筋/砌体量需构件参数读取（M3 扩展）",
+                "note": "混凝土体积按构件几何推算（墙/柱逐个溯源）；钢筋/砌体量需构件参数读取（M3 扩展）",
             }, ensure_ascii=False)
         if name == "aec_cost_estimate":
             from . import costing
