@@ -81,6 +81,38 @@ def dwg_to_dxf(dwg_path: str, *, timeout: int = 180) -> str:
     return str(out)
 
 
+def render_preview(dxf_path: str, png_path: str | None = None, *, dpi: int = 160) -> str:
+    """DXF → PNG 预览图（matplotlib 后端，与 acad_builder 同款隔离子进程）。"""
+    png = Path(png_path or (Path(dxf_path).with_suffix(".preview.png")))
+    script = f'''
+import ezdxf
+from ezdxf.addons.drawing import RenderContext, Frontend
+from ezdxf.addons.drawing.matplotlib import MatplotlibBackend
+import matplotlib.pyplot as plt
+
+doc = ezdxf.readfile(r"{dxf_path}")
+fig = plt.figure()
+ax = fig.add_axes([0, 0, 1, 1])
+ctx = RenderContext(doc)
+backend = MatplotlibBackend(ax)
+Frontend(ctx, backend).draw_layout(doc.modelspace(), finalize=True)
+fig.savefig(r"{png}", dpi={dpi})
+print(r"{png}")
+'''
+    with tempfile.NamedTemporaryFile("w", suffix="_render.py", delete=False, encoding="utf-8") as f:
+        f.write(script)
+        r = f.name
+    try:
+        proc = subprocess.run([sys.executable, r], capture_output=True, text=True, timeout=180,
+                              stdin=subprocess.DEVNULL)
+    finally:
+        Path(r).unlink(missing_ok=True)
+    if proc.returncode != 0:
+        raise RuntimeError(f"DXF 渲染失败: {proc.stderr[-300:]}")
+    out = proc.stdout.strip().splitlines()[-1]
+    return out
+
+
 def read_drawing(path: str, *, timeout: int = 120) -> dict:
     """DXF/DWG → 结构化报告 dict。DWG 自动尝试 COM 转换。"""
     src = Path(path)

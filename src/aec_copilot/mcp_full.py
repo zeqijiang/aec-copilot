@@ -218,6 +218,11 @@ def call_tool(name: str, args: dict[str, Any]) -> str:
                                "note": "advisory 模式：视觉观察仅供参考，确定性几何复核仍是权威"}, ensure_ascii=False)
         if name == "aec_import_drawing":
             report = read_drawing(args["path"])
+            try:
+                report["preview_png"] = render_preview(args["path"])
+            except Exception as e:  # noqa: BLE001
+                report["preview_png"] = None
+                report["preview_error"] = str(e)[:200]
             return json.dumps(report, ensure_ascii=False)
         if name == "aec_quantity":
             from aec_mcp.engines import get_engine
