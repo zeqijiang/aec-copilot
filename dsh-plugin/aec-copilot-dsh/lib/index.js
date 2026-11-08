@@ -174,6 +174,12 @@ export function apply(ctx, config) {
       await next();
       return;
     }
+    // 产物文件流由专用 handler 处理（/api/aec/file 精确匹配）；此处放行交给下一个监听器，
+    // 否则会被当作 API 方法 "file" 而报「未知方法」。
+    if (url.pathname === `${API_PREFIX}/file`) {
+      await next();
+      return;
+    }
     try {
       const method = url.pathname.slice(API_PREFIX.length + 1).split('/')[0];
       const handler = method && Object.hasOwn(api, method) ? api[method] : undefined;
@@ -203,7 +209,7 @@ export function apply(ctx, config) {
      同样挂在 connection/request 层：/api/aec/file?path=… */
   ctx.on('connection/request', async (req, res, next) => {
     const url = new URL(req.url ?? '/', 'http://dsh.internal');
-    if (!url.pathname.startsWith(`${API_PREFIX}/file`)) {
+    if (url.pathname !== `${API_PREFIX}/file`) {
       await next();
       return;
     }
