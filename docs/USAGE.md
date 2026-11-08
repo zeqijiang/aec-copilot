@@ -143,6 +143,7 @@ uv run aec eval        # 50 例模拟基准
 
 **限制（诚实清单）**
 - SolidWorks：需 SW 已启动；P0 仅 box 拉伸零件；装配需"将p1和p2创建装配体"句式；
+- 门窗构件化：本机 Revit 族库为精简安装（D:\Family Templates 无门窗 .rfa/样板）——当前用 create_opening 洞口 + 按 m² 计价的合法口径；补装门窗族库后可升级为按樘计价的真实构件；
 - IFC：桥源码已打 2024 API 补丁（`Revision.NumberType` 移除→Sequence 管理；`NewFloor`→`Floor.Create`+CurveLoop），补丁版 DLL 已部署（原版备份 `.bak`）；
 - acad 真机 = ezdxf 离线 DXF（COM 直连路径在引擎层仓库，未接契约层）。
 
