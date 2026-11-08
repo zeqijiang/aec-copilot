@@ -85,6 +85,9 @@ def tool_defs() -> list[dict[str, Any]]:
         {"name": "aec_review_image", "description": "VLM 看图：效果图(PNG) + 原始需求 → 视觉模型比对，返回结构化差异（passed/differences）。"
             "需环境变量 AEC_VLM_API_KEY + AEC_VLM_MODEL（OpenAI 兼容端点）；advisory 模式——几何复核仍是权威", "inputSchema": _obj(
             {"image_path": {"type": "string"}, "instruction": {"type": "string"}}, ["image_path"])},
+        {"name": "aec_quantity", "description": "真模型工程量指标：从 Revit 构件读墙体长度/厚/高 → 汇总砌体体积、模板面积、各层统计，"
+            "并按建筑面积(gfa，可传或按首层墙外包推算)出单方含量指标（对标造价开项指标）", "inputSchema": _obj(
+            {"gfa": {"type": "number"}, "categories": {"type": "array", "items": {"type": "string"}}})},
     ]
 
 
@@ -110,8 +113,26 @@ def call_tool(name: str, args: dict[str, Any]) -> str:
     try:
         if name == "aec_health":
             from aec_mcp.engines import engine_health_all
+            from aec_mcp.engines.revit.engine import RevitEngine
+            from pathlib import Path as _P
+            import os as _os
 
-            return json.dumps({"version": __version__, "engines": engine_health_all()}, ensure_ascii=False, default=str)
+            # 多版本桥探测：扫描 %LOCALAPPDATA%\RevitCommandBridge\<year> 全部年份
+            versions = {}
+            bridge_base = _P(_os.environ.get("LOCALAPPDATA", "")) / "RevitCommandBridge"
+            if bridge_base.exists():
+                for year_dir in sorted(bridge_base.iterdir()):
+                    if year_dir.is_dir() and year_dir.name.isdigit():
+                        st = year_dir / "status.json"
+                        data = None
+                        try:
+                            data = json.loads(st.read_text(encoding="utf-8"))
+                        except Exception:  # noqa: BLE001
+                            pass
+                        versions[year_dir.name] = {"state": (data or {}).get("state", "no_status"),
+                                                   "document": (data or {}).get("data", {}).get("document_title")}
+            return json.dumps({"version": __version__, "engines": engine_health_all(),
+                               "revit_bridges": versions}, ensure_ascii=False, default=str)
         if name == "aec_preview":
             plan = Planner().parse(args["instruction"], args.get("engine", "revit"))
             calls = [{"name": c.name, "arguments": c.arguments} for c in compile_plan(plan)]
@@ -195,6 +216,57 @@ def call_tool(name: str, args: dict[str, Any]) -> str:
         if name == "aec_import_drawing":
             report = read_drawing(args["path"])
             return json.dumps(report, ensure_ascii=False)
+        if name == "aec_quantity":
+            from aec_mcp.engines import get_engine
+
+            eng = get_engine("revit")
+            q = eng.send({"operation": "execute_plan", "args": {"steps": [
+                {"id": "qw", "operation": "query_elements", "args": {"category": "OST_Walls", "limit": 200}},
+                {"id": "qf", "operation": "query_elements", "args": {"category": "OST_Floors", "limit": 100}},
+            ]}, "preview": False}, wait_seconds=120)
+            walls, floors = [], []
+            for s in (q.get("data") or {}).get("steps", []):
+                sid, elements = s.get("id"), (s.get("data") or {}).get("elements", [])
+                if sid == "qw":
+                    walls = elements
+                elif sid == "qf":
+                    floors = elements
+
+            def _bbox_span(el, axis):
+                bb = el.get("bounding_box") or {}
+                mn, mx = bb.get("min") or {}, bb.get("max") or {}
+                return abs((mx.get(axis) or 0) - (mn.get(axis) or 0))
+
+            walls_detail, total_volume, total_formwork, total_len = [], 0.0, 0.0, 0.0
+            for w in walls:
+                cs, ce, bb = w.get("curve_start"), w.get("curve_end"), w.get("bounding_box")
+                if not (cs and ce and bb):
+                    continue
+                length = ((ce["x"] - cs["x"]) ** 2 + (ce["y"] - cs["y"]) ** 2) ** 0.5
+                thickness = min(_bbox_span(w, "x"), _bbox_span(w, "y"))
+                height = bb["max"]["z"] - bb["min"]["z"]
+                volume = length * thickness * height / 1e9  # mm³ → m³
+                formwork = (2 * length * height + 2 * length * thickness) / 1e6  # m²（两侧大面 + 顶面）
+                total_len += length
+                total_volume += volume
+                total_formwork += formwork
+                walls_detail.append({"name": w.get("name"), "length_mm": round(length, 1),
+                                     "thickness_mm": round(thickness, 1), "height_mm": round(height, 1),
+                                     "volume_m3": round(volume, 2)})
+            floor_area = sum((_bbox_span(f, "x") * _bbox_span(f, "y")) / 1e6 for f in floors)
+            gfa = float(args.get("gfa") or 0) or round(floor_area, 1) or None
+            return json.dumps({
+                "walls_count": len(walls_detail), "walls": walls_detail[:40],
+                "totals": {"wall_length_m": round(total_len / 1000, 1),
+                           "wall_volume_m3": round(total_volume, 2),
+                           "wall_formwork_m2": round(total_formwork, 1),
+                           "floor_area_m2": round(floor_area, 1),
+                           "floors_count": len(floors)},
+                "indicators": ({"per_gfa_wall_volume_m3_per_m2": round(total_volume / gfa, 3),
+                                "per_gfa_wall_formwork_m2_per_m2": round(total_formwork / gfa, 2)} if gfa else None),
+                "gfa_source": "provided" if args.get("gfa") else ("derived_from_floors" if floor_area else None),
+                "note": "混凝土体积按墙足印几何推算（真构件逐个溯源）；钢筋/砌体量需构件参数读取（M3 扩展）",
+            }, ensure_ascii=False)
         raise AECError("E_NOT_FOUND", f"未知工具 {name!r}")
     except AECError as e:
         return json.dumps({"ok": False, "code": e.code, "message": e.message}, ensure_ascii=False, default=str)
