@@ -151,83 +151,90 @@ function buildApi({ repoRoot, bridgeRoot }) {
 export function apply(ctx, config) {
   const cfg = resolveConfig(config);
   const api = buildApi(cfg);
-  // 与官方 /api 网关相同的连接鉴权围栏；connection 服务缺失时拒绝所有请求（录阶同语义）。
-  const fence = (req) => (ctx.connection?.requestRejection ? ctx.connection.requestRejection(req) === undefined : false);
   try {
     appendFileSync(_probe, `apply entered ${new Date().toISOString()} connection=${typeof ctx.connection}\n`);
   } catch { /* 只读环境忽略 */ }
 
-  // 产物文件流（PNG 内联 / PDF·DWG·RVT·IFC 下载）——白名单限定 runs/eval/out
-  ctx.effect(
-    () =>
-      ctx.webServer.register({
-        kind: 'prefix',
-        path: '/aec/file',
-        handler: async (req, res) => {
-          if (!fence(req)) {
-            res.writeHead(403, { 'content-type': 'application/json' });
-            res.end(JSON.stringify({ ok: false, error: { code: 'forbidden' } }));
-            return;
-          }
-          const url = new URL(req.url ?? '/', 'http://dsh.internal');
-          const target = url.searchParams.get('path') ?? '';
-          const cfg = resolveConfig(config);
-          const FILE_ROOTS = [path.join(cfg.repoRoot, 'runs'), path.join(cfg.repoRoot, 'eval'), path.join(cfg.repoRoot, 'out')].map((p) => path.resolve(p));
-          const resolved = path.resolve(target);
-          if (!FILE_ROOTS.some((root) => resolved.startsWith(root)) || !existsSync(resolved) || !statSync(resolved).isFile()) {
-            res.writeHead(404, { 'content-type': 'application/json' });
-            res.end(JSON.stringify({ ok: false, error: { code: 'not-found', message: '文件不在白名单目录或不存在' } }));
-            return;
-          }
-          const ext = path.extname(resolved).toLowerCase();
-          const types = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.svg': 'image/svg+xml', '.pdf': 'application/pdf', '.ifc': 'text/plain; charset=utf-8', '.md': 'text/markdown; charset=utf-8' };
-          res.writeHead(200, {
-            'content-type': types[ext] ?? 'application/octet-stream',
-            'content-disposition': types[ext] ? 'inline' : `attachment; filename="${encodeURIComponent(path.basename(resolved))}"`,
-          });
-          res.end(readFileSync(resolved));
-        },
-      }),
-    'aec-copilot-dsh: /aec/file routes',
-  );
+  /* 官方 /api 网关在 connection 层完成 Host/Origin 围栏与浏览器会话鉴权，
+     只有通过后才会进入 connection/request waterfall。插件必须挂在这一层：
+     独立前缀（如 /aec/api）不在官方网关的 admit 路径内，会被围栏一律 403。
+     约定（与 dsh-desktop-host 同款）：命中 /api/aec/* 时自行应答，否则交棒 next()。 */
+  const API_PREFIX = '/api/aec';
+  let __wfProbe = 0;
+  ctx.on('connection/request', async (req, res, next) => {
+    if (__wfProbe < 40) {
+      __wfProbe++;
+      try {
+        const u = new URL(req.url ?? '/', 'http://dsh.internal');
+        appendFileSync(_probe, `wf ${new Date().toISOString()} ${req.method} ${u.pathname}\n`);
+      } catch { /* 只读环境忽略 */ }
+    }
+    const url = new URL(req.url ?? '/', 'http://dsh.internal');
+    if (!url.pathname.startsWith(API_PREFIX)) {
+      await next();
+      return;
+    }
+    try {
+      const method = url.pathname.slice(API_PREFIX.length + 1).split('/')[0];
+      const handler = method && Object.hasOwn(api, method) ? api[method] : undefined;
+      if (typeof handler !== 'function') {
+        res.writeHead(404, { 'content-type': 'application/json' });
+        res.end(JSON.stringify({ ok: false, error: { code: 'not-found', message: `未知方法 "${method}"` } }));
+        return;
+      }
+      const args = req.method === 'GET'
+        ? Object.fromEntries(url.searchParams)
+        : await new Promise((resolve, reject) => {
+          let body = '';
+          req.on('data', (c) => (body += c));
+          req.on('end', () => { try { resolve(body ? JSON.parse(body) : {}); } catch (e) { reject(e); } });
+          req.on('error', reject);
+        });
+      const result = await handler(args);
+      res.writeHead(200, { 'content-type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, result }));
+    } catch (error) {
+      res.writeHead(500, { 'content-type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, error: { code: 'error', message: String(error?.message ?? error) } }));
+    }
+  });
 
-  ctx.effect(
-    () =>
-      ctx.webServer.register({
-        kind: 'prefix',
-        path: '/aec/api',
-        handler: async (req, res) => {
-          if (!fence(req)) {
-            res.writeHead(403, { 'content-type': 'application/json' });
-            res.end(JSON.stringify({ ok: false, error: { code: 'forbidden', message: 'forbidden' } }));
-            return;
-          }
-          const url = new URL(req.url ?? '/', 'http://dsh.internal');
-          const method = url.pathname.startsWith('/aec/api/') ? url.pathname.slice('/aec/api/'.length) : '';
-          const handler = method && Object.hasOwn(api, method) ? api[method] : undefined;
-          if (typeof handler !== 'function') {
-            res.writeHead(404, { 'content-type': 'application/json' });
-            res.end(JSON.stringify({ ok: false, error: { code: 'not-found', message: `未知方法 "${method}"` } }));
-            return;
-          }
-          try {
-            const args = req.method === 'GET' ? Object.fromEntries(url.searchParams) : await new Promise((resolve, reject) => {
-              let body = '';
-              req.on('data', (c) => (body += c));
-              req.on('end', () => { try { resolve(body ? JSON.parse(body) : {}); } catch (e) { reject(e); } });
-              req.on('error', reject);
-            });
-            const result = await handler(args);
-            res.writeHead(200, { 'content-type': 'application/json' });
-            res.end(JSON.stringify({ ok: true, result }));
-          } catch (error) {
-            res.writeHead(500, { 'content-type': 'application/json' });
-            res.end(JSON.stringify({ ok: false, error: { code: 'error', message: String(error?.message ?? error) } }));
-          }
-        },
-      }),
-    'aec-copilot-dsh: /aec/api routes',
-  );
+  /* 产物文件流（PNG 内联 / PDF·DWG·RVT·IFC 下载）——白名单限定 runs/eval/out。
+     同样挂在 connection/request 层：/api/aec/file?path=… */
+  ctx.on('connection/request', async (req, res, next) => {
+    const url = new URL(req.url ?? '/', 'http://dsh.internal');
+    if (!url.pathname.startsWith(`${API_PREFIX}/file`)) {
+      await next();
+      return;
+    }
+    const target = url.searchParams.get('path') ?? '';
+    const cfg2 = resolveConfig(config);
+    const FILE_ROOTS = [path.join(cfg2.repoRoot, 'runs'), path.join(cfg2.repoRoot, 'eval'), path.join(cfg2.repoRoot, 'out')].map((p) => path.resolve(p));
+    const resolved = path.resolve(target);
+    if (!FILE_ROOTS.some((root) => resolved.startsWith(root)) || !existsSync(resolved) || !statSync(resolved).isFile()) {
+      res.writeHead(404, { 'content-type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, error: { code: 'not-found', message: '文件不在白名单目录或不存在' } }));
+      return;
+    }
+    const ext = path.extname(resolved).toLowerCase();
+    const types = {
+      '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.svg': 'image/svg+xml',
+      '.pdf': 'application/pdf', '.ifc': 'text/plain; charset=utf-8', '.md': 'text/markdown; charset=utf-8',
+      '.json': 'application/json', '.txt': 'text/plain; charset=utf-8', '.csv': 'text/csv; charset=utf-8',
+      '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    };
+    const inline = Boolean(types[ext]);
+    const base = path.basename(resolved);
+    const asciiName = base.replace(/[^\x20-\x7E]/g, '_').replace(/["\\]/g, '_');
+    res.writeHead(200, {
+      'content-type': types[ext] ?? 'application/octet-stream',
+      'content-disposition': inline
+        ? 'inline'
+        : `attachment; filename="${asciiName}"; filename*=UTF-8''${encodeURIComponent(base)}`,
+      'cache-control': 'no-store',
+    });
+    res.end(readFileSync(resolved));
+  });
 
-  ctx.logger?.info?.(`aec-copilot-dsh: 已挂载 /aec/api（repoRoot=${cfg.repoRoot}）`);
+  ctx.logger?.info?.(`aec-copilot-dsh: 已挂载 ${API_PREFIX}（repoRoot=${cfg.repoRoot}）`);
 }
