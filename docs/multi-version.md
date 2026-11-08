@@ -51,11 +51,16 @@
 
 **根因**：Revit 在后台被 Windows EcoQoS 节流时，ExternalEvent.Raise 偶发丢失——请求文件已领取但主线程回调从未触发。
 
-**已部署的双重修复**（桥 DLL 已重编译部署）：
+**已部署的三重修复**（桥 DLL 已重编译部署，`dll` 185KB → 含双 watchdog）：
 1. **processing watchdog**（BridgeFileQueue.RequeueStaleProcessing，90s 阈值）：领取后未完成的请求自动写失败响应并归档——客户端秒收失败可重试，不再傻等；日志留痕 `watchdog requeued stale processing requests=N`
-2. **客户端重试**：aec_run 的 max_attempts 自动消化单次丢失
+2. **ExternalEvent 僵死看护**（BridgeRuntime，30s 阈值）——**根因修复**：Revit 接受 Raise 后若因后台节流/模态态未触发 handler，`IsPending` 会**永久为 true**，旧代码因此直接 return，队列从此彻底停摆（必须重启 Revit）。新代码检测到僵死即销毁并重建 ExternalEvent，再 Raise；日志留痕 `external event stalled for Ns — recreating it`
+3. **客户端重试**：aec_run 的 max_attempts 自动消化单次丢失
+
+**实测稳定性**：修复后连续 6 次命令无需重启 Revit（6/6 通过）；建模回归 passed。
 
 **部署建议**（管理员一次执行，永久解除节流）：
 ```powershell
 powercfg /powerthrottling disable /path "D:\Revit 2024\Revit.exe"
 ```
+
+**运维要点**：Revit 重启后必须先打开项目文档，否则桥返回「请先在 Revit 中打开一个项目文档」——这是明确错误而非挂起，可安全重试。
