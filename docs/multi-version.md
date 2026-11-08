@@ -44,3 +44,18 @@
 - 本机仅装 Revit 2024（`D:\Revit 2024`）→ 2024 通道已真机验证 ✅
 - 多版本真机验证需要对应版本安装环境（虚拟机/多机）
 - aec-mcp 侧无需改动即可服务任何装好桥的版本 ✅
+
+## 五、桥稳定性：watchdog 与后台节流（2024 实测）
+
+**症状**：请求被桥领取（inbox→processing）后永不执行，客户端等到超时；数分钟到数十分钟不定期出现，偶发自愈。
+
+**根因**：Revit 在后台被 Windows EcoQoS 节流时，ExternalEvent.Raise 偶发丢失——请求文件已领取但主线程回调从未触发。
+
+**已部署的双重修复**（桥 DLL 已重编译部署）：
+1. **processing watchdog**（BridgeFileQueue.RequeueStaleProcessing，90s 阈值）：领取后未完成的请求自动写失败响应并归档——客户端秒收失败可重试，不再傻等；日志留痕 `watchdog requeued stale processing requests=N`
+2. **客户端重试**：aec_run 的 max_attempts 自动消化单次丢失
+
+**部署建议**（管理员一次执行，永久解除节流）：
+```powershell
+powercfg /powerthrottling disable /path "D:\Revit 2024\Revit.exe"
+```
