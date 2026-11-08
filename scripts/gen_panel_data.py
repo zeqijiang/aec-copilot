@@ -66,6 +66,20 @@ def runs_table(limit: int = 15) -> list[dict]:
     return sorted(rows, key=lambda x: -x["mtime"])[:limit]
 
 
+def cost_snapshot() -> dict | None:
+    f = REPO / "runs" / "cost" / "cost-report.json"
+    if not f.exists():
+        return None
+    try:
+        report = json.loads(f.read_text(encoding="utf-8"))
+        return {"汇总": report.get("汇总"), "费用结构": report.get("费用结构"),
+                "概况": report.get("项目概况"), "清单项数": len(report.get("清单明细", [])),
+                "excel": str(REPO / "runs" / "cost" / "cost-report.xlsx"),
+                "markdown": str(REPO / "runs" / "cost" / "cost-report.md")}
+    except Exception:
+        return None
+
+
 def report_markdown() -> str:
     f = EVAL_LIVE / "report.md"
     return f.read_text(encoding="utf-8") if f.exists() else ""
@@ -77,19 +91,17 @@ def main() -> int:
         "eval": eval_summary(),
         "bridge": bridge_status(),
         "runs": runs_table(),
+        "cost": cost_snapshot(),
         "report_md": report_markdown(),
     }
     payload = "window.__AEC_DATA__ = " + json.dumps(snapshot, ensure_ascii=True) + ";"
     text = CLIENT.read_text(encoding="utf-8")
-    marker = "/*__AEC_DATA__*/"
-    if marker not in text:
+    # 幂等替换：命中占位标记（首跑）或已有数据行（重跑），直到 // host 路由 注释为止
+    pattern = r"(?:/\*__AEC_DATA__\*/|window\.__AEC_DATA__ = .*?;)\n?(?=\s*// host 路由)"
+    updated, n = re.subn(pattern, lambda m: payload, text, count=1, flags=re.S)
+    if n == 0:
         print("client.js 缺少占位标记 /*__AEC_DATA__*/")
         return 1
-    updated = re.sub(
-        re.escape(marker) + r"[\s\S]*?(?=\n    // host 路由)",
-        lambda m: payload + "\n    // host 路由",  # lambda 防止 re 解释 JSON 里的 \n 转义
-        text, count=1,
-    )
     CLIENT.write_text(updated, encoding="utf-8")
     # 同步 pnpm node_modules 里的插件副本（低完整性令牌可能写不了 .dsh —— 失败仅警告）
     nm = Path.home() / ".dsh" / "profiles" / "desktop" / "node_modules" / "aec-copilot-dsh"

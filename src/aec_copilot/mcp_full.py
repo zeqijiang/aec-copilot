@@ -283,6 +283,7 @@ def call_tool(name: str, args: dict[str, Any]) -> str:
             md_path = out_dir / "cost-report.md"
             md_path.parent.mkdir(parents=True, exist_ok=True)
             md_path.write_text(costing.to_markdown(report), encoding="utf-8")
+            (out_dir / "cost-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
             xlsx_path = costing.to_excel(report, out_dir / "cost-report.xlsx")
             return json.dumps({"ok": True, "汇总": report["汇总"], "费用结构": report["费用结构"],
                                "清单项数": len(report["清单明细"]),
